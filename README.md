@@ -1,0 +1,4 @@
+stocksim
+========
+
+Online stock simulator
