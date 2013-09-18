@@ -1,4 +1,4 @@
 stocksim
 ========
 
-Online stock simulator
+Online stock simulator.
