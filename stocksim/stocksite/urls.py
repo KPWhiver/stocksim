@@ -18,4 +18,5 @@ urlpatterns = patterns('',
     url(r'^$', 'stocksite.views.home'),
     url(r'^settings/$', 'stocksite.views.settings'),
     url(r'^companies/$', 'stocksite.views.companies'),
+    url(r'^companies/([A-Z]+)/$', 'stocksite.views.company')
 )
