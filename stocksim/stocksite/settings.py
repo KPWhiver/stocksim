@@ -20,6 +20,8 @@ DATABASES = {
     }
 }
 
+AUTH_PROFILE_MODULE = "stocksite.UserProfile"
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.3/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -37,7 +39,7 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-SITE_ID = "523c191b5e02042c7b1d5fc4"
+SITE_ID = "5242b3585e0204401a23c72f"
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -125,7 +127,14 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'stocksite'
 )
+
+if DEBUG:
+    import logging
+    l = logging.getLogger('django_mongodb_engine')
+    l.setLevel(logging.DEBUG)
+    l.addHandler(logging.StreamHandler())
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -139,13 +148,19 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
+        },'django_mongodb_engine': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
         },
     }
 }
