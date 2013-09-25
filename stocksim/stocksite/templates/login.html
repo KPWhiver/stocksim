@@ -41,16 +41,35 @@
   <body>
 
     <div class="container">
+      {% if form.errors %}
+      <div class="alert alert-error">
+        Your username and password didn't match. Please try again.
+      </div>
+      {% endif %}
 
-      <form class="form-signin">
+      <form class="form-signin" method="post" actions="{% url 'django.contrib.auth.views.login' %}">
+        {% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
+
+        <!--
         <input type="text" class="input-block-level" placeholder="Email address">
         <input type="password" class="input-block-level" placeholder="Password">
         <label class="checkbox">
           <input type="checkbox" value="remember-me"> Remember me
         </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+        -->
+
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {{ form.password.label_tag }}
+        {{ form.password }}
+
+        <button class="btn btn-large btn-primary" type="submit" value="login">Sign in</button>
+        <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
       </form>
+
+
+
 
     </div> <!-- /container -->
 
