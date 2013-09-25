@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db import models
-from djangotoolbox.fields import EmbeddedModelField
+from djangotoolbox.fields import EmbeddedModelField, ListField
 
 
 class UserProfile(models.Model):
@@ -16,25 +16,25 @@ def create_profile(sender, instance, created, **kwargs):
         profile, new = UserProfile.objects.get_or_create(user=instance)
 
 class Company(models.Model):
-    shortName = models.CharField()
-    longName = models.CharField()
+    shortName = models.CharField(max_length=50) # Please insert appropriate max_length
+    longName = models.CharField(max_length=50) # Please insert appropriate max_length
     historicData = ListField(EmbeddedModelField('History'))
     dailyData = ListField(EmbeddedModelField('TimePoint'))
 
 class History(models.Model):
     date = models.DateField(auto_now_add=True)
     volume = models.BigIntegerField()
-    adjustedClosePrice = models.DecimalField(..., max_digits=10, decimal_places=2)
-    highPrice = models.DecimalField(..., max_digits=10, decimal_places=2)
-    lowPrice = models.DecimalField(..., max_digits=10, decimal_places=2)
-    closePrice = models.DecimalField(..., max_digits=10, decimal_places=2)
-    openPrice = models.DecimalField(..., max_digits=10, decimal_places=2)
+    adjustedClosePrice = models.DecimalField(max_digits=10, decimal_places=2)
+    highPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    lowPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    closePrice = models.DecimalField(max_digits=10, decimal_places=2)
+    openPrice = models.DecimalField(max_digits=10, decimal_places=2)
     
 class TimePoint(models.Model):
     time = models.DateTimeField(auto_now_add=True)
-    currentPrice = models.DecimalField(..., max_digits=10, decimal_places=2)
-    bidPrice = models.DecimalField(..., max_digits=10, decimal_places=2)
-    askPrice = models.DecimalField(..., max_digits=10, decimal_places=2)
+    currentPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    bidPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    askPrice = models.DecimalField(max_digits=10, decimal_places=2)
 
 #class User:
 
