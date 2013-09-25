@@ -4,7 +4,32 @@
 
 {% block content %}
   <div class="hero-unit">
-    Graphs go here
+    <div id="graph-container" style="width:100%; height:400px;"></div>
   </div>
-  This is the string that was passed: {{ string }}
+{% endblock %}
+
+{% block scripts %}
+  <script src="http://code.highcharts.com/stock/highstock.js"></script>
+  <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+  <script type="text/javascript">
+  $(function() {
+      window.chart = new Highcharts.StockChart({
+          chart : {
+              renderTo : 'graph-container'
+          },
+          title : {
+              text : 'AAPL Stock Price'
+          },
+          series : [{
+              name : 'AAPL',
+              data : [
+                  [Date.UTC(2006, 0, 29, 0, 0, 0), 30.14],
+                  [Date.UTC(2006, 0, 29, 1, 0, 0), 34.76],
+                  [Date.UTC(2006, 0, 29, 2, 0, 0), 34.34],
+                  [Date.UTC(2006, 0, 29, 3, 0, 0), 33.9]
+              ]
+          }]
+      });
+  });
+  </script>
 {% endblock %}
