@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}Stock Simulator 2014{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      
+      .navbar {
+        font-size: 13px;
+      }
+
+      .navbar .brand {
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Nav bar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Stock Simulator 2014</a>
+          <ul class="nav">
+            <li class="active"><a href="#"><i class="icon-home"></i>Home</a></li>
+            <li><a href="/companies">Companies</a></li>
+          </ul>
+
+          <p class="navbar-text pull-right">
+              <a href="#username" class="navbar-link">Username</a>
+              | $123,456,789.10 |
+              <a href="/login" class="navbar-link">Sign out</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    {% block scripts %}
+    {% endblock %}
+  </body>
+</html>
