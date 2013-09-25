@@ -2,8 +2,8 @@ from django.conf.urls.defaults import patterns, include, url
 from stocksite import views
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
@@ -14,9 +14,11 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'stocksite.views.home'),
     url(r'^settings/$', 'stocksite.views.settings'),
     url(r'^companies/$', 'stocksite.views.companies'),
-    url(r'^companies/([A-Z]+)/$', 'stocksite.views.company')
+    url(r'^companies/([A-Z]+)/$', 'stocksite.views.company'),
+
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
 )

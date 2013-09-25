@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 import datetime
 
+@login_required
 def home(request):
     return render(request, 'home.html')
     return render(request, 'login.html', {})
