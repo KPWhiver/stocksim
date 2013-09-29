@@ -1,8 +1,11 @@
-from django.http import HttpResponse
+import datetime
+
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-import datetime
+
+from stocksite.models import Company
 
 @login_required
 def home(request):
@@ -13,9 +16,14 @@ def companies(request):
     return render(request, 'companies.html', {})
     
 def company(request, name):
-    return render(request, 'company.html', {})
+    try:
+      company = Company.objects.get(shortName=name)
+    except Company.DoesNotExist:
+      # TODO: give pretty error
+      return HttpResponseNotFound('<h1>Company does not exist</h1>')
+    
+    return render(request, 'company.html', {'company':company})
     
 def settings(request):
     return render(request, 'settings.html', {})
 
-    

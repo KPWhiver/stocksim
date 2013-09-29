@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Stock Simulator 2014 - GOOG{% endblock %}
+{% block title %}Stock Simulator 2014 - {{ company.shortName }}{% endblock %}
 
 {% block content %}
-  <h1>GOOG</h1>
+  <h1>{{ company.longName }}</h1>
+  <ul class="list-group">
+    <li class="list-group-item">Short name: {{ company.longName }}</li>
+    <li class="list-group-item">Long name: {{ company.shortName }}</li>
+  </ul>
 {% endblock %}
