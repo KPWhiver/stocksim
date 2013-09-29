@@ -4,4 +4,48 @@
 
 {% block content %}
   <h1>Companies</h1>
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <td> Company abbr. </td>
+      <td> Company name </td>
+      <td> Stock volume </td>
+      <td> Prev. open price </td>
+      <td> Prev. low price </td>
+      <td> Prev. high price </td>
+      <td> Prev. close price </td>
+      <td> Current price </td>
+      <td> Current bid price </td>
+      <td> Current ask price </td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for company in companies %}
+    <tr>
+      <td> {{ company.shortName }} </td>
+      <td> {{ company.longName}} </td>
+      <td> {{ yesterday.volume }} </td>
+      <td> {{ yesterday.openPrice }} </td>
+      <td> {{ yesterday.lowPrice }} </td>
+      <td> {{ yesterday.highPrice }} </td>
+      <td> {{ yesterday.closePrice }} </td>
+      <td> {{ today.currentPrice }} </td>
+      <td> {{ today.bidPrice }} </td>
+      <td> {{ today.askPrice }} </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  </table>
+{% endblock %}
+
+{% block scripts %}  
+  <script>
+    $( document ).ready(function() 
+    {
+      $( "tbody>tr" ).click(function()
+      {
+        location.href = this.cells[0].innerHTML
+      });
+    });
+  </script>
 {% endblock %}
