@@ -10,7 +10,7 @@ def home(request):
     return render(request, 'login.html', {})
     
 def companies(request):
-    return render(request, 'companies.html', {})
+    return render(request, 'companies.html', {'companies': [], 'yesterday': None, 'today': None})
     
 def company(request, name):
     return render(request, 'company.html', {})
