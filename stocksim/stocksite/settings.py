@@ -9,19 +9,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django_mongodb_engine', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'django_db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': 27017,                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
-
-AUTH_PROFILE_MODULE = "stocksite.UserProfile"
-
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.3/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -164,3 +151,13 @@ LOGGING = {
         },
     }
 }
+
+
+AUTH_PROFILE_MODULE = 'stocksite.UserProfile'
+LOGIN_REDIRECT_URL = '/'
+
+try:
+  from db_settings import *
+except ImportError:
+  print 'Database settings are missing, please create a db_settings.py file containing the database details'
+  exit(-1)
