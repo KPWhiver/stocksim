@@ -2,14 +2,24 @@
 <html>
   <head>
     <title>{% block title %}Stock Simulator 2014{% endblock %}</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Bootstrap -->
-    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap-combined.min.css">
+
     <style type="text/css">
       body {
         padding-top: 60px;
         padding-bottom: 40px;
+      }
+
+      @media screen and (max-width: 979px) {
+        body { padding-top: 0px; }
+
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 20px;
+          padding-right: 5px;
       }
       
       .navbar {
@@ -21,6 +31,10 @@
         font-size: 15px;
         font-weight: bold;
       }
+
+      .btn.btn-navbar {
+        margin-top: 2px;
+      }
     </style>
   </head>
   <body>
@@ -28,17 +42,32 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-th-list">
+            </span>
+          </a>
           <a class="brand" href="/">Stock Simulator 2014</a>
-          <ul class="nav">
-            <li class="active"><a href="/"><i class="icon-home"></i>Home</a></li>
-            <li><a href="/companies">Companies</a></li>
-          </ul>
+          <div class="nav-collapse collapse">
+            <!-- Navigation links -->
+            <ul class="nav">
+              <li class="active"><a href="/"><i class="icon-home"></i> Home</a></li>
+              <li><a href="/companies">Companies</a></li>
+            </ul>
 
-          <p class="navbar-text pull-right">
-            <a href="/settings" class="navbar-link">{{ user.username }}</a>
-            | $123,456,789.10 |
-            <a href="/accounts/logout" class="navbar-link">Sign out</a>
-          </p>
+            <!-- Search bar -->
+            <form class="navbar-search pull-left">
+              <input type="text" class="search-query" placeholder="Search companies">
+            </form>
+
+            <!-- User data -->
+            <p class="navbar-text pull-right">
+              <a href="/settings" class="navbar-link" style="font-weight:bold;">{{ user.username }}</a>
+              &middot;
+              $123,456,789.10
+              &middot;
+              <a href="/accounts/logout" class="navbar-link">Sign out</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -55,8 +84,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     {% block scripts %}
     {% endblock %}
   </body>

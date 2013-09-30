@@ -1,10 +1,13 @@
+# Standard library imports
 import datetime
 
+# Third party imports
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 
+# Local imports
 from stocksite.models import Company, History, TimePoint
 
 @login_required
