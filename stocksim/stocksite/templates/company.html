@@ -69,7 +69,8 @@
     <form>
       <div class="input-prepend input-append">
         <button class="btn" type="button">Buy</button>
-        <input class="span2" id="appendedPrependedInput" type="text">
+        <input class="span2" id="appendedPrependedInput" type="text" 
+          onkeypress="if(event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
         <button class="btn" type="button">Sell</button>
       </div>
     </form>
