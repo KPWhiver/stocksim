@@ -3,9 +3,102 @@
 {% block title %}Stock Simulator 2014 - {{ company.shortName }}{% endblock %}
 
 {% block content %}
-  <h1>{{ company.longName }}</h1>
-  <ul class="list-group">
-    <li class="list-group-item">Short name: {{ company.longName }}</li>
-    <li class="list-group-item">Long name: {{ company.shortName }}</li>
-  </ul>
+  <div class="page-header text-center">
+    <h1>{{ company.shortName }} {{ company.longName }}</h1>
+  </div>
+
+  <div class="row">
+    <div class="span4">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td><strong>Company name</strong></td>
+            <td>{{ company.longName }}</td>
+          </tr>
+          <tr>
+            <td><strong>Symbol</strong></td>
+            <td>{{ company.shortName }}</td>
+          </tr>
+          <tr>
+            <td><strong>Some</strong></td>
+            <td>a</td>
+          </tr>
+          <tr>
+            <td><strong>Other</strong></td>
+            <td>b</td>
+          </tr>
+          <tr>
+            <td><strong>Details</strong></td>
+            <td>c</td>
+          </tr>
+          <tr>
+            <td><strong>About</strong></td>
+            <td>d</td>
+          </tr>
+          <tr>
+            <td><strong>This</strong></td>
+            <td>e</td>
+          </tr>
+          <tr>
+            <td><strong>Company</strong></td>
+            <td>f</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="span8">
+      <div class="well">
+        <div id="graph-container1" style="width:100%; height:400px;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="span4 text-center">
+      <h3>Available stock: 1337</h3>
+    </div>
+    <div class="span4 text-center">
+      <h3>Value: $987,654,321</h3>
+    </div>
+    <div class="span4 text-center">
+      <h3>Change: +0.05%</h3>
+    </div>
+  </div>
+  
+  <div class="text-center">
+    <form>
+      <div class="input-prepend input-append">
+        <button class="btn" type="button">Buy</button>
+        <input class="span2" id="appendedPrependedInput" type="text">
+        <button class="btn" type="button">Sell</button>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="http://code.highcharts.com/stock/highstock.js"></script>
+  <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+  <script type="text/javascript">
+  $(function() {
+      window.chart = new Highcharts.StockChart({
+          chart : {
+              renderTo : 'graph-container1'
+          },
+          title : {
+              text : '{{ company.shortName }} Stock Today'
+          },
+          series : [{
+              name : '{{ company.shortName }}',
+              data : [
+                  [Date.UTC(2006, 0, 29, 0, 0, 0), 30.14],
+                  [Date.UTC(2006, 0, 29, 1, 0, 0), 34.76],
+                  [Date.UTC(2006, 0, 29, 2, 0, 0), 34.34],
+                  [Date.UTC(2006, 0, 29, 3, 0, 0), 33.9]
+              ]
+          }]
+      });
+  });
+  </script>
 {% endblock %}
