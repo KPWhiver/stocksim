@@ -20,7 +20,7 @@ def companies(request):
         Company(shortName = 'GOOG',
                 longName = 'Google',
                 historicData = [History(volume = 10000, adjustedClosePrice = 800, highPrice = 810, lowPrice = 790, closePrice = 801, openPrice = 803)],
-                dailyData = [TimePoint(currentPrice = 799, bidPrice = 799.5, askPrice = 798.5)]).save()
+                dailyData = [TimePoint(currentPrice = 799, bidPrice = 799.5, askPrice = 799.5)]).save()
         Company(shortName = 'APPL',
                 longName = 'Apple',
                 historicData = [History(volume = 9000, adjustedClosePrice = 80, highPrice = 81, lowPrice = 79, closePrice = 81, openPrice = 83)],
