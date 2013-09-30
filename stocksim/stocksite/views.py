@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 
-from stocksite.models import Company
+from stocksite.models import Company, History, TimePoint
 
 @login_required
 def home(request):
@@ -13,7 +13,19 @@ def home(request):
     return render(request, 'login.html', {})
     
 def companies(request):
-    return render(request, 'companies.html', {'companies': [], 'yesterday': None, 'today': None})
+    if Company.objects.count() == 0:
+        Company(shortName = 'GOOG',
+                longName = 'Google',
+                historicData = [History(volume = 10000, adjustedClosePrice = 800, highPrice = 810, lowPrice = 790, closePrice = 801, openPrice = 803)],
+                dailyData = [TimePoint(currentPrice = 799, bidPrice = 799.5, askPrice = 798.5)]).save()
+        Company(shortName = 'APPL',
+                longName = 'Apple',
+                historicData = [History(volume = 9000, adjustedClosePrice = 80, highPrice = 81, lowPrice = 79, closePrice = 81, openPrice = 83)],
+                dailyData = [TimePoint(currentPrice = 79, bidPrice = 79.5, askPrice = 78.5)]).save()
+    
+    companies = Company.objects.all()
+    
+    return render(request, 'companies.html', {'companies': companies})
     
 def company(request, name):
     try:
