@@ -11,9 +11,8 @@ from django.contrib.auth.decorators import login_required
 from stocksite.models import Company, History, TimePoint
 
 @login_required
-def home(request):
+def home(request):   
     return render(request, 'home.html')
-    return render(request, 'login.html', {})
     
 def companies(request):
     if Company.objects.count() == 0:

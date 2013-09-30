@@ -8,14 +8,7 @@ from djangotoolbox.fields import EmbeddedModelField, ListField
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     money = models.DecimalField(max_digits=50, decimal_places=4, default=0)
-    #New fields go here
-    
-
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    """Create a matching profile whenever a user object is created."""
-    if created: 
-        profile, new = UserProfile.objects.get_or_create(user=instance)
+    stocks = ListField(EmbeddedModelField('OwnedStock'))
 
 class Company(models.Model):
     shortName = models.CharField(max_length=50) # Please insert appropriate max_length
@@ -37,6 +30,19 @@ class TimePoint(models.Model):
     currentPrice = models.DecimalField(max_digits=10, decimal_places=2)
     bidPrice = models.DecimalField(max_digits=10, decimal_places=2)
     askPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    
+class OwnedStock(models.Model):
+    company = models.ForeignKey(Company)
+    amount = models.BigIntegerField()
+    
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    """Create a matching profile whenever a user object is created."""
+    if created: 
+        profile, new = UserProfile.objects.get_or_create(user=instance)
+
+
 
 #class User:
 
