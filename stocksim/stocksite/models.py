@@ -7,7 +7,9 @@ from djangotoolbox.fields import EmbeddedModelField, ListField
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
+    money = models.DecimalField(max_digits=50, decimal_places=4, default=0)
     #New fields go here
+    
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
