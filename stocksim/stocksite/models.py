@@ -4,11 +4,15 @@ from django.dispatch import receiver
 from django.db import models
 from djangotoolbox.fields import EmbeddedModelField, ListField
 
+from django_mongodb_engine.contrib import MongoDBManager
+
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     money = models.DecimalField(max_digits=50, decimal_places=4, default=0)
     stocks = ListField(EmbeddedModelField('OwnedStock'))
+    
+    objects = MongoDBManager()
 
 class Company(models.Model):
     shortName = models.CharField(max_length=50) # Please insert appropriate max_length

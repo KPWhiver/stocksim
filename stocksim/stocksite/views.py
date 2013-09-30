@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 
 # Local imports
-from stocksite.models import Company, History, TimePoint
+from stocksite.models import Company, History, TimePoint, UserProfile
 
 @login_required
 def home(request):   
@@ -40,4 +40,25 @@ def company(request, name):
     
 def settings(request):
     return render(request, 'settings.html', {})
+    
+def mapReduce():
+    mapfunc = """
+    function() 
+    {
+      this.stocks.forEach(
+        function(stock) { emit(stock.company_id, stock.amount) }
+      )
+    }
+    """
+    
+    reducefunc = """
+    function reduce(key, values) 
+    {
+      return Array.sum(values)
+    }
+    """
+
+    for pair in UserProfile.objects.map_reduce(mapfunc, reducefunc, 'stockcount'):
+        print pair.key, pair.value
+
 
