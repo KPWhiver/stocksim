@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>{% block title %}Stock Simulator 2014{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap-combined.min.css">
@@ -12,7 +13,7 @@
         padding-bottom: 40px;
       }
 
-      @media screen and (max-width: 980px) {
+      @media screen and (max-width: 979px) {
         body { padding-top: 0px; }
 
         .navbar-text.pull-right {
@@ -84,7 +85,7 @@
 
     <!-- Scripts -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     {% block scripts %}
     {% endblock %}
   </body>

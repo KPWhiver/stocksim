@@ -37,9 +37,17 @@
 {% endblock %}
 
 {% block scripts %}  
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/dataTables_bootstrap.css"></link>
+  <script type="text/javascript" charset="utf-8" src="{{ STATIC_URL }}DataTables/media/js/jquery.dataTables.js"></script>
+  <script src="{{ STATIC_URL }}js/dataTables_bootstrap.js" language="javascript" charset="utf-8" type="text/javascript"></script>
   <script>
     $( document ).ready(function() 
     {
+      $( "table" ).dataTable(
+      {
+        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+      });
+          
       $( "tbody>tr" ).click(function()
       {
         location.href = $( this.cells[0] ).text()
