@@ -58,12 +58,13 @@
             <form class="navbar-search pull-left">
               <input type="text" class="search-query" placeholder="Search companies">
             </form>
-
+            
             <!-- User data -->
             <p class="navbar-text pull-right">
               <a href="/settings" class="navbar-link" style="font-weight:bold;">{{ user.username }}</a>
               &middot;
-              $123,456,789.10
+              {% load humanize %}
+              ${{ user.get_profile.money|floatformat:2|intcomma }}
               &middot;
               <a href="/accounts/logout" class="navbar-link">Sign out</a>
             </p>
