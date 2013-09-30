@@ -44,31 +44,49 @@
   <body>
 
     <div class="container">
+
+    
       {% if form.errors %}
       <div class="alert alert-error">
         Your username and password didn't match. Please try again.
       </div>
       {% endif %}
+        
 
       <form class="form-signin" method="post" actions="{% url 'django.contrib.auth.views.login' %}">
-        {% csrf_token %}
-        <h2 class="form-signin-heading">Please sign in</h2>
+        {% csrf_token %}    
+                <ul id="tabs" class="nav nav-tabs">
+          <li class="active"><a data-toggle="tab" href="#login">Login</a></li>
+          <li><a data-toggle="tab" href="#register">Register</a></li>
+        </ul>
+        
+        <div class="tab-content">
+          <div class="tab-pane active" id="login">
+        
+            <h2 class="form-signin-heading">Please sign in</h2>
 
-        <!--
-        <input type="text" class="input-block-level" placeholder="Email address">
-        <input type="password" class="input-block-level" placeholder="Password">
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        -->
+            <!--
+            <input type="text" class="input-block-level" placeholder="Email address">
+            <input type="password" class="input-block-level" placeholder="Password">
+            <label class="checkbox">
+              <input type="checkbox" value="remember-me"> Remember me
+            </label>
+            -->
 
-        {{ form.username.label_tag }}
-        {{ form.username }}
-        {{ form.password.label_tag }}
-        {{ form.password }}
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {{ form.password.label_tag }}
+            {{ form.password }}
 
-        <button class="btn btn-large btn-primary" type="submit" value="login">Sign in</button>
-        <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
+            <button class="btn btn-large btn-primary" type="submit" value="login">Sign in</button>
+            <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
+          </div>
+          <div class="tab-pane" id="register">
+            <button class="btn btn-large btn-primary" type="submit" value="login">Sign in</button>
+            <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
+          
+          </div>
+        </div>
       </form>
 
       <hr>
@@ -81,6 +99,11 @@
     <!-- Scripts -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-
+    <script>
+      $('#tabs a').click(function (event) {
+        event.preventDefault();
+        $(this).tab('show');
+      })
+    </script>
   </body>
 </html>
