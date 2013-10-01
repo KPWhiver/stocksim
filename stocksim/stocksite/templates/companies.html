@@ -4,7 +4,7 @@
 
 {% block content %}
   <h1>Companies</h1>
-  <table class="table table-hover">
+  <table id="companies" class="table table-hover">
   <thead>
     <tr>
       <th> Symbol </th>
@@ -45,7 +45,7 @@
     {
       $( "#companies-button" ).addClass("active")
 
-      $( "table" ).dataTable(
+      $( "#companies" ).dataTable(
       {
         "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
       });
