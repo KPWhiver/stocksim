@@ -12,11 +12,11 @@ from stocksite.models import Company, History, TimePoint, UserProfile
 
 @login_required
 def home(request):   
-    news = [['Klaas crowned world emperor', '#'], 
-            ['Resistance to Klaasolution slowly ceases', '#'], 
-            ['Klaasolution has started, millions march the streets to overthrow governments', '#'], 
-            ['Klaas proclaims himself world leader, calls on overthrowing governments', '#'], 
-            ['Normal day, no news', '#']]    
+    news = [['Klaas crowned world emperor', '#', datetime.date(2013, 10, 1)], 
+            ['Resistance to Klaasolution slowly ceases', '#', datetime.date(2013, 9, 29)], 
+            ['Klaasolution has started, millions march the streets to overthrow governments', '#', datetime.date(2013, 9, 26)], 
+            ['Klaas proclaims himself world leader, calls on overthrowing governments', '#', datetime.date(2013, 9, 22)], 
+            ['Normal day, no news', '#', datetime.date(2013, 9, 13)]]    
     
     return render(request, 'home.html', {'news': news})
     
