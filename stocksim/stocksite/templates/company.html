@@ -19,30 +19,32 @@
             <td><strong>Symbol</strong></td>
             <td>{{ company.shortName }}</td>
           </tr>
+          {% with company.historicData|last as last %}
           <tr>
-            <td><strong>Some</strong></td>
-            <td>a</td>
+            <td><strong>Yesterday open price</strong></td>
+            <td>{{ last.openPrice }}</td>
           </tr>
           <tr>
-            <td><strong>Other</strong></td>
-            <td>b</td>
+            <td><strong>Yesterday high price</strong></td>
+            <td>{{ last.highPrice }}</td>
           </tr>
           <tr>
-            <td><strong>Details</strong></td>
-            <td>c</td>
+            <td><strong>Yesterday low price</strong></td>
+            <td>{{ last.lowPrice }}</td>
           </tr>
           <tr>
-            <td><strong>About</strong></td>
-            <td>d</td>
+            <td><strong>Yesterday close price</strong></td>
+            <td>{{ last.closePrice }}</td>
           </tr>
           <tr>
-            <td><strong>This</strong></td>
-            <td>e</td>
+            <td><strong>Yesterday adjusted close price</strong></td>
+            <td>{{ last.adjustedClosePrice }}</td>
           </tr>
           <tr>
-            <td><strong>Company</strong></td>
-            <td>f</td>
+            <td><strong>Volume</strong></td>
+            <td>{{ last.volume }}</td>
           </tr>
+          {% endwith %}
         </tbody>
       </table>
     </div>
@@ -55,7 +57,7 @@
   
   <div class="row">
     <div class="span4 text-center">
-      <h3>Available stock: 1337</h3>
+      <h3>Owned stock: 1337</h3>
     </div>
     <div class="span4 text-center">
       <h3>Value: $987,654,321</h3>

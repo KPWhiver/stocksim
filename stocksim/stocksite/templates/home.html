@@ -7,36 +7,49 @@
     <div id="graph-container" style="width:100%; height:400px;"></div>
   </div>
   
-  <table class="table table-hover">
-  <thead>
-    <tr>
-      <th> Symbol </th>
-      <th> Stock owned </th>
-      <th> Prev. open price </th>
-      <th> Prev. close price </th>
-      <th> Current price </th>
-      <th> Current bid price </th>
-      <th> Current ask price </th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for stock in user.get_profile.stocks %}
-      {% with stock.company.historicData|last as last %}
-    <tr>
-      <td> <abbr title="{{ stock.company.longName }}">{{ stock.company.shortName }}</abbr> </td>
-      <td> {{ stock.amount }} </td>
-      <td> {{ last.openPrice }} </td>
-      <td> {{ last.closePrice }} </td>
-      {% endwith %}
-      {% with stock.company.dailyData|last as last %}
-      <td> {{ last.currentPrice }} </td>
-      <td> {{ last.bidPrice }} </td>
-      <td> {{ last.askPrice }} </td>
-      {% endwith %}
-    </tr>
-    {% endfor %}
-  </tbody>
-  </table>
+  <div class="row">
+    <div class="span8">
+  
+      <table class="table table-hover">
+      <thead>
+        <tr>
+          <th> Symbol </th>
+          <th> Stock owned </th>
+          <th> Prev. open price </th>
+          <th> Prev. close price </th>
+          <th> Current price </th>
+          <th> Current bid price </th>
+          <th> Current ask price </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for stock in user.get_profile.stocks %}
+          {% with stock.company.historicData|last as last %}
+        <tr>
+          <td> <abbr title="{{ stock.company.longName }}">{{ stock.company.shortName }}</abbr> </td>
+          <td> {{ stock.amount }} </td>
+          <td> {{ last.openPrice }} </td>
+          <td> {{ last.closePrice }} </td>
+          {% endwith %}
+          {% with stock.company.dailyData|last as last %}
+          <td> {{ last.currentPrice }} </td>
+          <td> {{ last.bidPrice }} </td>
+          <td> {{ last.askPrice }} </td>
+          {% endwith %}
+        </tr>
+        {% endfor %}
+      </tbody>
+      </table>
+  
+    </div>
+ 
+    <div class="span4">
+      <h2> News </h2>
+      {% for newsItem in news %}
+        <a href=#>{{ newsItem.0 }}</a><br><br>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
@@ -71,6 +84,19 @@
       $( "table" ).dataTable(
       {
         "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+      });
+      
+      $( "tbody>tr" ).click(function()
+      {
+        location.href = "company/" + $( this.cells[0] ).text()
+      });
+      
+      $( "tbody>tr" ).hover(function() 
+      {
+	      $(this).css('cursor','pointer');
+      }, function() 
+      {
+	      $(this).css('cursor','auto');
       });
   });  
   </script>

@@ -12,7 +12,13 @@ from stocksite.models import Company, History, TimePoint, UserProfile
 
 @login_required
 def home(request):   
-    return render(request, 'home.html')
+    news = [['Klaas crowned world emperor', '#'], 
+            ['Resistance to Klaasolution slowly ceases', '#'], 
+            ['Klaasolution has started, millions march the streets to overthrow governments', '#'], 
+            ['Klaas proclaims himself world leader, calls on overthrowing governments', '#'], 
+            ['Normal day, no news', '#']]    
+    
+    return render(request, 'home.html', {'news': news})
     
 def companies(request):
     if Company.objects.count() == 0:
