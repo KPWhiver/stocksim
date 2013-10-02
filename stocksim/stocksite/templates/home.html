@@ -25,8 +25,8 @@
       <tbody>
         {% for stock in user.get_profile.stocks %}
           {% with stock.company.historicData|last as last %}
-        <tr>
-          <td> <abbr title="{{ stock.company.longName }}">{{ stock.company.shortName }}</abbr> </td>
+        <tr style="cursor: pointer;">
+          <td> <a class="unstyled-link" href="/companies/{{ stock.company.shortName }}"><abbr title="{{ stock.company.longName }}">{{ stock.company.shortName }}</abbr></a></td>
           <td> {{ stock.amount }} </td>
           <td> {{ last.openPrice }} </td>
           <td> {{ last.closePrice }} </td>
@@ -48,8 +48,8 @@
         <h2> News </h2>
         {% for newsItem in news %}
           <div class="news-row">
-            <span class="news-date pull-right">{{ newsItem.2|date:"d-m-y" }}</span>
-            <a href=#>{{ newsItem.0 }}</a>
+            <span class="news-date pull-right">{{ newsItem.2|date:"H:i d-M" }}</span>
+            <a href={{ newsItem.1 }}>{{ newsItem.0 }}</a>
           </div>
         {% endfor %}
       </div>
@@ -93,15 +93,7 @@
       
       $( "tbody>tr" ).click(function()
       {
-        location.href = $( this.cells[0] ).text()
-      });
-      
-      $( "tbody>tr" ).hover(function() 
-      {
-        $(this).css('cursor','pointer');
-      }, function() 
-      {
-        $(this).css('cursor','auto');
+        location.href = $(this).find("a").attr("href");
       });
   });  
   </script>
