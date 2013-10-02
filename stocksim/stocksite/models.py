@@ -13,6 +13,23 @@ class UserProfile(models.Model):
     stocks = ListField(EmbeddedModelField('OwnedStock'))
     
     objects = MongoDBManager()
+    
+    def totalStockBought():
+        mapfunc = """
+        function() 
+        {
+          this.stocks.forEach(
+            function(stock) { emit(stock.company_id, stock.amount) }
+          )
+        }
+        """
+        reducefunc = """
+        function reduce(key, values) 
+        {
+          return Array.sum(values)
+        }
+        """
+        return UserProfile.objects.map_reduce(mapfunc, reducefunc, 'stockcount'):
 
 class Company(models.Model):
     shortName = models.CharField(max_length=50) # Please insert appropriate max_length

@@ -61,25 +61,3 @@ def company(request, name):
     
 def settings(request):
     return render(request, 'settings.html', {})
-    
-def mapReduce():
-    mapfunc = """
-    function() 
-    {
-      this.stocks.forEach(
-        function(stock) { emit(stock.company_id, stock.amount) }
-      )
-    }
-    """
-    
-    reducefunc = """
-    function reduce(key, values) 
-    {
-      return Array.sum(values)
-    }
-    """
-
-    for pair in UserProfile.objects.map_reduce(mapfunc, reducefunc, 'stockcount'):
-        print pair.key, pair.value
-
-
