@@ -19,8 +19,8 @@
   <tbody>
     {% for company in companies %}
       {% with company.historicData|last as last %}
-    <tr>
-      <td> <abbr title="{{ company.longName }}">{{ company.shortName }}</abbr> </td>
+    <tr style="cursor: pointer;">
+      <td> <a class="unstyled-link" href="/companies/{{ company.shortName }}"><abbr title="{{ company.longName }}">{{ company.shortName }}</abbr></a></td>
       <td> {{ last.volume }} </td>
       <td> {{ last.openPrice }} </td>
       <td> {{ last.closePrice }} </td>
@@ -52,15 +52,7 @@
           
       $( "tbody>tr" ).click(function()
       {
-        location.href = $( this.cells[0] ).text()
-      });
-      
-      $( "tbody>tr" ).hover(function() 
-      {
-	      $(this).css('cursor','pointer');
-      }, function() 
-      {
-	      $(this).css('cursor','auto');
+        location.href = $(this).find("a").attr("href");
       });
     });
   </script>
