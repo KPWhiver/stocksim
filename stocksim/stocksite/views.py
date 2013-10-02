@@ -41,8 +41,10 @@ def company(request, name):
     except Company.DoesNotExist:
       # TODO: give pretty error
       return HttpResponseNotFound('<h1>Company does not exist</h1>')
+    stocks = request.user.get_profile().stocks
+    ownedStock = next((stock for stock in stocks if stock.company.shortName == name), None)
     
-    return render(request, 'company.html', {'company':company})
+    return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
     
 def settings(request):
     return render(request, 'settings.html', {})
