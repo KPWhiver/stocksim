@@ -20,17 +20,11 @@ def home(request):
     news = []
     
     for entry in d.entries[0:numOfItems]:
-      dateParsed = entry.published_parsed
-      date = datetime.datetime(dateParsed.tm_year, dateParsed.tm_mon, dateParsed.tm_mday, dateParsed.tm_hour, dateParsed.tm_min)
-    
-      news += [entry.title, entry.link, date]
-    """
-    news = [['Klaas crowned world emperor', '#', datetime.date(2013, 10, 1)], 
-            ['Resistance to Klaasolution slowly ceases', '#', datetime.date(2013, 9, 29)], 
-            ['Klaasolution has started, millions march the streets to overthrow governments', '#', datetime.date(2013, 9, 26)], 
-            ['Klaas proclaims himself world leader, calls on overthrowing governments', '#', datetime.date(2013, 9, 22)], 
-            ['Normal day, no news', '#', datetime.date(2013, 9, 13)]]    
-    """
+        dateParsed = entry.published_parsed
+        date = datetime.datetime(dateParsed.tm_year, dateParsed.tm_mon, dateParsed.tm_mday, dateParsed.tm_hour, dateParsed.tm_min)
+        
+        news.append([entry.title, entry.link, date])
+
     return render(request, 'home.html', {'news': news})
     
 def companies(request):
@@ -56,8 +50,10 @@ def company(request, name):
     except Company.DoesNotExist:
       # TODO: give pretty error
       return HttpResponseNotFound('<h1>Company does not exist</h1>')
+    stocks = request.user.get_profile().stocks
+    ownedStock = next((stock for stock in stocks if stock.company.shortName == name), None)
     
-    return render(request, 'company.html', {'company':company})
+    return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
     
 def settings(request):
     return render(request, 'settings.html', {})

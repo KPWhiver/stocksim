@@ -56,6 +56,9 @@ class OwnedStock(models.Model):
     company = models.ForeignKey(Company)
     amount = models.BigIntegerField()
     
+    def get_value(self):
+        return self.amount * self.company.dailyData[-1].currentPrice
+    
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
