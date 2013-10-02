@@ -48,7 +48,7 @@
         <h2> News </h2>
         {% for newsItem in news %}
           <div class="news-row">
-            <span class="news-date pull-right">{{ newsItem.2|date:"d-m H:i" }}</span>
+            <span class="news-date pull-right">{{ newsItem.2|date:"H:i d-M" }}</span>
             <a href={{ newsItem.1 }}>{{ newsItem.0 }}</a>
           </div>
         {% endfor %}
