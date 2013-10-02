@@ -32,8 +32,10 @@ def companies(request):
                 dailyData = [TimePoint(currentPrice = 79, bidPrice = 79.5, askPrice = 78.5)]).save()
     
     companies = Company.objects.all()
+
+    searchText = request.GET.get('search')
     
-    return render(request, 'companies.html', {'companies': companies})
+    return render(request, 'companies.html', {'companies': companies, 'searchText': searchText})
     
 def company(request, name):
     try:
