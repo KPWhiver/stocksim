@@ -5,15 +5,41 @@ import time
 
 
 # Third party imports
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
 
 import feedparser
 
 # Local imports
 from stocksite.models import Company, History, TimePoint, UserProfile
+
+def register(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password1')
+
+                user = User.objects.create(username=username)
+                if password:
+                    user.set_password(password)
+                else:
+                    user.set_unusable_password()
+
+                user.save()
+
+                new_user = authenticate(username=username, password=password)
+                login(request, new_user)
+                
+                return HttpResponseRedirect("/")
+
+    return HttpResponseRedirect("/")
 
 @login_required
 def home(request):   
