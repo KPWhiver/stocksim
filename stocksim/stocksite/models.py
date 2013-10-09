@@ -29,7 +29,7 @@ class UserProfile(models.Model):
           return Array.sum(values)
         }
         """
-        return UserProfile.objects.map_reduce(mapfunc, reducefunc, 'stockcount'):
+        return UserProfile.objects.map_reduce(mapfunc, reducefunc, 'stockcount')
 
 class Company(models.Model):
     shortName = models.CharField(max_length=50) # Please insert appropriate max_length
