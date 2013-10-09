@@ -22,4 +22,6 @@ urlpatterns = patterns('',
 
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login', {'login_url': '/accounts/login/'}),
+    
+    url(r'^rest/([A-Z]+)/$', 'stocksite.views.rest'),
 )

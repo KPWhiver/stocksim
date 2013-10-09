@@ -1,5 +1,8 @@
 # Standard library imports
-import datetime
+from datetime import datetime, date
+import json
+import time
+
 
 # Third party imports
 from django.http import HttpResponse, HttpResponseNotFound
@@ -21,7 +24,7 @@ def home(request):
     
     for entry in d.entries[0:numOfItems]:
         dateParsed = entry.published_parsed
-        date = datetime.datetime(dateParsed.tm_year, dateParsed.tm_mon, dateParsed.tm_mday, dateParsed.tm_hour, dateParsed.tm_min)
+        date = datetime(dateParsed.tm_year, dateParsed.tm_mon, dateParsed.tm_mday, dateParsed.tm_hour, dateParsed.tm_min)
         
         news.append([entry.title, entry.link, date])
 
@@ -60,6 +63,24 @@ def company(request, name):
       return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
     else:
       return render(request, 'company.html', {'company':company, 'amount_stocks':0, 'value_stocks':0})
+
+def rest(request, name):
+    try:
+      company = Company.objects.get(shortName=name)
+    except Company.DoesNotExist:
+      return HttpResponse(json.dumps([]), content_type="application/json")
+    
+    response_data = []
+
+    for data in company.historicData:
+      timestamp = (data.date.toordinal() - date(1970, 1, 1).toordinal()) *24*60*60*1000
+      response_data.append([timestamp, float(data.openPrice)])
+    
+    for data in company.dailyData:
+      timestamp = (data.time - datetime(1970, 1, 1)).total_seconds() * 1000
+      response_data.append([timestamp, float(data.currentPrice)])
+    
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @login_required
 def settings(request):

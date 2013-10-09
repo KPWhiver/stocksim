@@ -86,24 +86,17 @@
   <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript">
   $(function() {
-      window.chart = new Highcharts.StockChart({
-          chart : {
-              renderTo : 'graph-container1'
-          },
-          title : {
-              text : '{{ company.shortName }} Stock Today'
-          },
-          series : [{
-              name : '{{ company.shortName }}',
-              data : [
-                  [Date.UTC(2006, 0, 29, 0, 0, 0), 30.14],
-                  [Date.UTC(2006, 0, 29, 1, 0, 0), 34.76],
-                  [Date.UTC(2006, 0, 29, 2, 0, 0), 34.34],
-                  [Date.UTC(2006, 0, 29, 3, 0, 0), 33.9]
-              ]
-          }]
+      $.getJSON('http://ec2-79-125-101-145.eu-west-1.compute.amazonaws.com/rest/{{ company.shortName }}/', function(data) {
+        $('#graph-container1').highcharts('StockChart', {
+            title : {
+                text : '{{ company.shortName }} Stock Today'
+            },
+            series : [{
+                name : '{{ company.shortName }}',
+                data : data
+            }]
+        });
       });
-      
       $( "#companies-button" ).addClass("active")
   });
   </script>
