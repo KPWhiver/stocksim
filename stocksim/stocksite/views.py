@@ -2,6 +2,7 @@
 from datetime import datetime, date
 import json
 import time
+import traceback
 
 
 # Third party imports
@@ -9,11 +10,14 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 import feedparser
 
 # Local imports
 from stocksite.models import Company, History, TimePoint, UserProfile
+from stocksite.decorators import ajax_required
+from stocksite.forms import TradeForm
 
 @login_required
 def home(request):   
@@ -55,12 +59,11 @@ def company(request, name):
     except Company.DoesNotExist:
       # TODO: give pretty error
       return HttpResponseNotFound('<h1>Company does not exist</h1>')
-    stocks = request.user.get_profile().stocks
-    ownedStock = next((stock for stock in stocks if stock.company.shortName == name), None)
+    stocks = request.user.get_profile().get_stock(name)
     
     # ownStock is None when the user has not yet bought stock of that company
-    if not ownedStock is None:
-      return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
+    if not stocks is None:
+      return render(request, 'company.html', {'company':company, 'amount_stocks':stocks.amount, 'value_stocks':stocks.get_value()})
     else:
       return render(request, 'company.html', {'company':company, 'amount_stocks':0, 'value_stocks':0})
 
@@ -81,6 +84,17 @@ def rest(request, name):
       response_data.append([timestamp, float(data.currentPrice)])
     
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+    
+@login_required
+@require_POST
+@ajax_required
+def trade_stock(request):
+    form = TradeForm(request.POST)
+    if form.is_valid():
+      form.performAction(request.user)
+    else:
+      print form.errors # Return the error so that it can be displayed
+    # Return some data which can be used to refresh the page
 
 @login_required
 def settings(request):

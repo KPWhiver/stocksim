@@ -71,10 +71,10 @@
   <div class="text-center">
     <form>
       <div class="input-prepend input-append">
-        <button class="btn" type="button">Buy</button>
-        <input class="span2" id="appendedPrependedInput" type="text" 
+        <button id="buy" class="btn" type="button">Buy</button>
+        <input class="span2" id="change-value" type="text" 
           onkeypress="if(event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
-        <button class="btn" type="button">Sell</button>
+        <button id="sell" class="btn" type="button">Sell</button>
       </div>
     </form>
   </div>
@@ -88,6 +88,19 @@
   $(function() {
       $.getJSON('http://ec2-79-125-101-145.eu-west-1.compute.amazonaws.com/rest/{{ company.shortName }}/', function(data) {
         $('#graph-container1').highcharts('StockChart', {
+            chart: {
+              events : {
+                load: function() {
+                  var series = this.series[0];
+                  setInterval(function() {
+                    $.getJSON('http://ec2-79-125-101-145.eu-west-1.compute.amazonaws.com/rest/{{ company.shortName }}/', function(data) {
+                      series.setData(data);
+                    });
+                    
+                  }, 60000);
+                }
+              }
+            },
             title : {
                 text : '{{ company.shortName }} Stock Today'
             },
@@ -97,7 +110,24 @@
             }]
         });
       });
-      $( "#companies-button" ).addClass("active")
+      $("#companies-button").addClass("active");
+      $(".btn").click(function() {
+        console.log(this.id);
+        $.ajax({
+          url: '/tradestock/',
+          type: 'POST',
+          data: {
+                  action: this.id,
+                  company: '{{ company.shortName }}',
+                  amount: $('#change-value').val(),
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+        })
+        .always(function() { // For now, reload the page after sending an ajax call
+          location.reload();
+        });
+      });
+
   });
   </script>
 {% endblock %}
