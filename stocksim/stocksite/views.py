@@ -26,7 +26,8 @@ def home(request):
         news.append([entry.title, entry.link, date])
 
     return render(request, 'home.html', {'news': news})
-    
+
+@login_required
 def companies(request):
     if Company.objects.count() == 0:
         Company(shortName = 'GOOG',
@@ -43,7 +44,8 @@ def companies(request):
     searchText = request.GET.get('search')
     
     return render(request, 'companies.html', {'companies': companies, 'searchText': searchText})
-    
+
+@login_required
 def company(request, name):
     try:
       company = Company.objects.get(shortName=name)
@@ -53,8 +55,13 @@ def company(request, name):
     stocks = request.user.get_profile().stocks
     ownedStock = next((stock for stock in stocks if stock.company.shortName == name), None)
     
-    return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
-    
+    # ownStock is None when the user has not yet bought stock of that company
+    if not ownedStock is None:
+      return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
+    else:
+      return render(request, 'company.html', {'company':company, 'amount_stocks':0, 'value_stocks':0})
+
+@login_required
 def settings(request):
     return render(request, 'settings.html', {})
     
