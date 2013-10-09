@@ -15,6 +15,21 @@
         background-color: #f5f5f5;
       }
 
+      .signin-container {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+
+      /*
       .form-signin {
         max-width: 300px;
         padding: 19px 29px 29px;
@@ -28,6 +43,7 @@
            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
                 box-shadow: 0 1px 2px rgba(0,0,0,.05);
       }
+      */
       .form-signin .form-signin-heading,
       .form-signin .checkbox {
         margin-bottom: 10px;
@@ -52,50 +68,67 @@
         Your username and password didn't match. Please try again.
       </div>
       {% endif %}
-        
 
-      <form class="form-signin" method="post" actions="{% url 'django.contrib.auth.views.login' %}">
-        {% csrf_token %}    
-                <ul id="tabs" class="nav nav-tabs">
+      <div class=signin-container>
+        <!-- Tabs -->
+        <ul id="tabs" class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#login">Login</a></li>
           <li><a data-toggle="tab" href="#register">Register</a></li>
         </ul>
-        
+
+        <!-- Tab content -->
         <div class="tab-content">
           <div class="tab-pane active" id="login">
-        
-            <h2 class="form-signin-heading">Please sign in</h2>
+            <form class="form-signin" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+              {% csrf_token %}    
+              <h2 class="form-signin-heading">Please sign in</h2>
 
-            <!--
-            <input type="text" class="input-block-level" placeholder="Email address">
-            <input type="password" class="input-block-level" placeholder="Password">
-            <label class="checkbox">
-              <input type="checkbox" value="remember-me"> Remember me
-            </label>
-            -->
+              {{ form.username.label_tag }}
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-user"></i></span>
+                {{ form.username }}
+              </div>
 
-            {{ form.username.label_tag }}
-            <div class="input-prepend">
-              <span class="add-on"><i class="icon-user"></i></span>
-              {{ form.username }}
-            </div>
+              {{ form.password.label_tag }}
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-lock"></i></span>
+                {{ form.password }}
+              </div>
 
-            {{ form.password.label_tag }}
-            <div class="input-prepend">
-              <span class="add-on"><i class="icon-lock"></i></span>
-              {{ form.password }}
-            </div>
-
-            <button class="btn btn-large btn-primary" type="submit" value="login">Sign in</button>
-            <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
+              <button class="btn btn-large btn-primary" type="submit" value="login">Sign in</button>
+              <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
+            </form>
           </div>
           <div class="tab-pane" id="register">
-            <button class="btn btn-large btn-primary" type="submit" value="login">Sign in</button>
-            <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
-          
+            <form class="form-signin" method="post" action="{% url 'stocksite.views.register' %}">
+              {% csrf_token %}
+              <h2 class="form-signin-heading">Create an account</h2>
+
+              {{ form.username.label_tag }}
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-user"></i></span>
+                {{ form.username }}
+              </div>
+
+              <label for="id_password">Password</label>
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-lock"></i></span>
+                <input id="id_password" type="password" name="password1"></input>
+              </div>
+
+              <label for="id_password_confirm">Confirm password</label>
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-lock"></i></span>
+                <input id="id_password_confirm" type="password" name="password2"></input>
+              </div>
+
+              <button class="btn btn-large btn-primary" type="submit" value="login">Create account</button>
+              <input class="btn btn-large" type="hidden" name="next" value="{{ next }}" />
+            </form>
           </div>
         </div>
-      </form>
+      </div>
+        
 
       <hr>
 

@@ -1,16 +1,45 @@
 # Standard library imports
-import datetime
+from datetime import datetime, date
+import json
+import time
+
 
 # Third party imports
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
 
 import feedparser
 
 # Local imports
 from stocksite.models import Company, History, TimePoint, UserProfile
+
+def register(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password1')
+
+                user = User.objects.create(username=username)
+                if password:
+                    user.set_password(password)
+                else:
+                    user.set_unusable_password()
+
+                user.save()
+
+                new_user = authenticate(username=username, password=password)
+                login(request, new_user)
+                
+                return HttpResponseRedirect("/")
+
+    return HttpResponseRedirect("/")
 
 @login_required
 def home(request):   
@@ -21,12 +50,13 @@ def home(request):
     
     for entry in d.entries[0:numOfItems]:
         dateParsed = entry.published_parsed
-        date = datetime.datetime(dateParsed.tm_year, dateParsed.tm_mon, dateParsed.tm_mday, dateParsed.tm_hour, dateParsed.tm_min)
+        date = datetime(dateParsed.tm_year, dateParsed.tm_mon, dateParsed.tm_mday, dateParsed.tm_hour, dateParsed.tm_min)
         
         news.append([entry.title, entry.link, date])
 
     return render(request, 'home.html', {'news': news})
-    
+
+@login_required
 def companies(request):
     if Company.objects.count() == 0:
         Company(shortName = 'GOOG',
@@ -43,7 +73,8 @@ def companies(request):
     searchText = request.GET.get('search')
     
     return render(request, 'companies.html', {'companies': companies, 'searchText': searchText})
-    
+
+@login_required
 def company(request, name):
     try:
       company = Company.objects.get(shortName=name)
@@ -53,7 +84,30 @@ def company(request, name):
     stocks = request.user.get_profile().stocks
     ownedStock = next((stock for stock in stocks if stock.company.shortName == name), None)
     
-    return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
+    # ownStock is None when the user has not yet bought stock of that company
+    if not ownedStock is None:
+      return render(request, 'company.html', {'company':company, 'amount_stocks':ownedStock.amount, 'value_stocks':ownedStock.get_value()})
+    else:
+      return render(request, 'company.html', {'company':company, 'amount_stocks':0, 'value_stocks':0})
+
+def rest(request, name):
+    try:
+      company = Company.objects.get(shortName=name)
+    except Company.DoesNotExist:
+      return HttpResponse(json.dumps([]), content_type="application/json")
     
+    response_data = []
+
+    for data in company.historicData:
+      timestamp = (data.date.toordinal() - date(1970, 1, 1).toordinal()) *24*60*60*1000
+      response_data.append([timestamp, float(data.openPrice)])
+    
+    for data in company.dailyData:
+      timestamp = (data.time - datetime(1970, 1, 1)).total_seconds() * 1000
+      response_data.append([timestamp, float(data.currentPrice)])
+    
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@login_required
 def settings(request):
     return render(request, 'settings.html', {})
