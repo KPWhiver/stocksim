@@ -99,18 +99,26 @@ class OwnedStock(models.Model):
     
     def get_value(self):
         return self.amount * self.company.dailyData[-1].currentPrice
+
+# Result from map reduces in totalWorth()
+class CompanyOwners(models.Model):
+    value = EmbeddedModelField('Owners')
     
+    objects = MongoDBManager()
+    
+class Owners(models.Model):
+    owners = ListField(EmbeddedModelField('Owner'))
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+class Owner(models.Model):
+    amount = models.BigIntegerField()
+    userid = models.ForeignKey(UserProfile)
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     """Create a matching profile whenever a user object is created."""
     if created: 
         profile, new = UserProfile.objects.get_or_create(user=instance)
-
-
-
-#class User:
-
 
 # Map/Reduce methods
 
@@ -146,8 +154,7 @@ def totalWorth():
         else
         {
           emit(this._id, {owners: [], price: 0});
-        }
-        
+        }       
     }
     """    
     reducefunc = """
@@ -159,7 +166,7 @@ def totalWorth():
         {
             if(value.owners !== [])
             {
-              result.owners.concat(value.owners); 
+              result.owners = result.owners.concat(value.owners); 
             }
             
             if(result.price === 0 && value.price !== 0)
@@ -171,9 +178,34 @@ def totalWorth():
         return result;
     }
     """
-    res = UserProfile.objects.map_reduce(mapfuncUser, reducefunc, out={'reduce': 'temp_worth'})
-    res = Company.objects.map_reduce(mapfuncCompany, reducefunc, out={'reduce': 'temp_worth'})
+    res = Company.objects.map_reduce(mapfuncCompany, reducefunc, out={'reduce': 'stocksite_companyowners'})
+    res = UserProfile.objects.map_reduce(mapfuncUser, reducefunc, out={'reduce': 'stocksite_companyowners'})
     
+    for pair in res:
+        print pair
+    
+    mapfunc = """
+    function()
+    {
+      var price = this.value.price;
+      this.value.owners.forEach(function(owner)
+      {
+        emit(owner.userid, owner.amount * price);
+      });    
+    }
+    """
+    
+    reducefunc = """
+    function(key, values)
+    {
+      return Array.sum(values);
+    }
+    """
+    
+    res = CompanyOwners.objects.map_reduce(mapfunc, reducefunc, 'temp_worth', drop_collection=True)
+    
+    for item in CompanyOwners.objects.all():
+        item.delete()
     
     for pair in res:
         print pair
