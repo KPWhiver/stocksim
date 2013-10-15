@@ -117,10 +117,16 @@ def updateDailyData():
 def updateVolumes():
     pass
 
-def addCompanies():
+def addCompanies(interval = 1):
     with open('companylist.csv', 'rb') as companiescsv:
         companyReader = csv.reader(companiescsv)
-        for company in companyReader:
+        
+        for index, company in enumerate(companyReader):
+            if index % interval != 0:
+                continue
+        
+            print company[0].strip()
+        
             if Company.objects.filter(shortName = company[0]).exists():
                 continue
                 
@@ -130,10 +136,11 @@ def fillDatabase():
     companies = Company.objects.all()
 
     for company in companies:
-        today = datetime.today()
-        data = getHistoricalPrices(company.shortName, today, today)
-        data = data.values()[0]
-        company.historicData.append(History(volume = data['Volume'], adjustedClosePrice = data['Adj Close'], highPrice = data['High'], lowPrice = data['Low'], closePrice = data['Close'], openPrice = data['Open']))
-        company.save()
+        yesterday = datetime.today() - datetime.timedelta(1)
+        monthago = today - datetime.timedelta(30)
+        data = getHistoricalPrices(company.shortName, monthago, yesterday)
+        #data = data.values()[0]
+        #company.historicData.append(History(volume = data['Volume'], adjustedClosePrice = data['Adj Close'], highPrice = data['High'], lowPrice = data['Low'], closePrice = data['Close'], openPrice = data['Open']))
+        #company.save()
         
 
