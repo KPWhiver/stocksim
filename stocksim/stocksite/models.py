@@ -10,7 +10,7 @@ import datetime
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
-    money = models.DecimalField(max_digits=50, decimal_places=4, default=0)
+    money = models.DecimalField(max_digits=50, decimal_places=4, default=100000)
     stocks = ListField(EmbeddedModelField('OwnedStock'))
     
     def get_stock(self, name):
