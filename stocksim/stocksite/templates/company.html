@@ -97,7 +97,7 @@
                 load: function() {
                   var series = this.series[0];
                   setInterval(function() {
-                    $.getJSON('/rest/{{ company.shortName }}/', function(data) {
+                    $.getJSON('/rest/companies/{{ company.shortName }}/', function(data) {
                       series.setData(data);
                     });
                     

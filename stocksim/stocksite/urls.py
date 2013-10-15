@@ -26,6 +26,6 @@ urlpatterns = patterns('',
     
     url(r'^tradestock/$', 'stocksite.views.trade_stock'), # URL for buying/selling through AJAX calls 
     
-    url(r'^rest/companies/([A-Z]+)/$', 'stocksite.views.restCompanies'),
-    url(r'^rest/user/$', 'stocksite.views.restUser'),
+    url(r'^rest/companies/([A-Z]+)/$', 'stocksite.rest.companies'),
+    url(r'^rest/user/$', 'stocksite.rest.user'),
 )
