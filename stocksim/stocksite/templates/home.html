@@ -66,22 +66,39 @@
   <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript">
   $(function() {
-      window.chart = new Highcharts.StockChart({
-          chart : {
-              renderTo : 'graph-container'
-          },
-          title : {
-              text : 'AAPL Stock Price'
-          },
-          series : [{
-              name : 'AAPL',
-              data : [
-                  [Date.UTC(2006, 0, 29, 0, 0, 0), 30.14],
-                  [Date.UTC(2006, 0, 29, 1, 0, 0), 34.76],
-                  [Date.UTC(2006, 0, 29, 2, 0, 0), 34.34],
-                  [Date.UTC(2006, 0, 29, 3, 0, 0), 33.9]
-              ]
-          }]
+      $.getJSON('/rest/user/', function(data) {
+        $('#graph-container').highcharts('StockChart', {
+            title : {
+                text : 'Balance'
+            },
+            xAxis: {
+                ordinal: false
+            },
+            series : [{
+                name : 'Balance',
+                data : data
+            }]
+        });
+      });
+      $("#companies-button").addClass("active");
+      $(".btn").click(function() {
+        $.ajax({
+          url: '/tradestock/',
+          type: 'POST',
+          data: {
+                  action: this.id,
+                  company: '{{ company.shortName }}',
+                  amount: $('#change-value').val(),
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+        })
+        //.success(function(data, textStatus, jqXHR) {
+        //  console.log(data);
+        //  $("#errors").html(data);
+        //});
+        .always(function() { // For now, reload the page after sending an ajax call
+          location.reload();
+        });
       });
       
       $( "#home-button" ).addClass("active")

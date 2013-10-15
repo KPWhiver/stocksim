@@ -90,7 +90,7 @@
   <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript">
   $(function() {
-      $.getJSON('/rest/{{ company.shortName }}/', function(data) {
+      $.getJSON('/rest/companies/{{ company.shortName }}/', function(data) {
         $('#graph-container1').highcharts('StockChart', {
             chart: {
               events : {
@@ -119,7 +119,6 @@
       });
       $("#companies-button").addClass("active");
       $(".btn").click(function() {
-        console.log(this.id);
         $.ajax({
           url: '/tradestock/',
           type: 'POST',

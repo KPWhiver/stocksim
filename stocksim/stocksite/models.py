@@ -1,3 +1,6 @@
+import datetime
+from decimal import Decimal
+
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -6,7 +9,7 @@ from djangotoolbox.fields import EmbeddedModelField, ListField
 
 from django_mongodb_engine.contrib import MongoDBManager
 
-import datetime
+
 
 from bson.son import SON
 
@@ -14,6 +17,7 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     money = models.DecimalField(max_digits=50, decimal_places=4, default=100000)
     stocks = ListField(EmbeddedModelField('OwnedStock'))
+    totalWorthData = ListField(EmbeddedModelField('TotalWorth'))
     
     def get_stock(self, name):
       return next((stock for stock in self.stocks if stock.company.shortName == name), None)
@@ -59,6 +63,11 @@ class UserProfile(models.Model):
       
     
     objects = MongoDBManager()
+
+class TotalWorth(models.Model):
+    time = models.DateTimeField(auto_now_add=True)
+    value = models.DecimalField(max_digits=50, decimal_places=2)
+    
 
 class Company(models.Model):
     shortName = models.CharField(max_length=50) # Please insert appropriate max_length
@@ -178,8 +187,8 @@ def totalWorth():
     res = Company.objects.map_reduce(mapfuncCompany, reducefunc, out={'reduce': 'stocksite_companyowners'})
     res = UserProfile.objects.map_reduce(mapfuncUser, reducefunc, out={'reduce': 'stocksite_companyowners'})
     
-    for pair in res:
-        print pair
+    #for pair in res:
+    #    print pair
     
     mapfunc = """
     function()
@@ -202,25 +211,26 @@ def totalWorth():
     res = CompanyOwners.objects.map_reduce(mapfunc, reducefunc, 'temp_worth', drop_collection=True)
     
     for item in CompanyOwners.objects.all():
-        item.delete()
+      item.delete()
     
-    for pair in res:
-        print pair
-        
-        
-    
-        """
-        comp = Company.objects.get(id=pair.key)
-        count = None
+    for entry in res:
+      profile = UserProfile.objects.get(id=entry.key)
+      profile.totalWorthData.append(TotalWorth(value=(profile.money + Decimal(entry.value))))
+      profile.save()
 
-        if StockCount.objects.filter(company = comp).exists():
-            count = StockCount.objects.get(company = comp)
-            count.amount = pair.value
-        else:
-            count = StockCount(company=comp, amount=pair.value)
 
-        count.save()
-        """
+    """
+    comp = Company.objects.get(id=pair.key)
+    count = None
+
+    if StockCount.objects.filter(company = comp).exists():
+        count = StockCount.objects.get(company = comp)
+        count.amount = pair.value
+    else:
+        count = StockCount(company=comp, amount=pair.value)
+
+    count.save()
+    """
 
 def totalStockBought():
     mapfunc = """
