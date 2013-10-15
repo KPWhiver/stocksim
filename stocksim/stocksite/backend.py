@@ -146,6 +146,9 @@ def fillDatabase():
         except HTTPError, e:
             print 'Error occurred:', e, 'company:', company.shortName
             continue
+        except Exception, e:
+            print 'Error occurred:', e, 'company:', company.shortName
+            continue
             
         for (date, values) in sorted(data.items()):
             day = datetime.date(int(date[0:4]), int(date[5:7]), int(date[8:10]))
