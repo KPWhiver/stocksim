@@ -43,7 +43,24 @@
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/dataTables_bootstrap.css"></link>
   <script type="text/javascript" charset="utf-8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
   <script src="{{ STATIC_URL }}js/dataTables_bootstrap.js" language="javascript" charset="utf-8" type="text/javascript"></script>
-  <script>
+	<script type="text/javascript">
+		jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+				"percent-pre": function ( a ) {
+						var x = (a == "-") ? 0 : a.replace( /%/, "" );
+						return parseFloat( x );
+				},
+		
+				"percent-asc": function ( a, b ) {
+						return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+				},
+		
+				"percent-desc": function ( a, b ) {
+						return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+				}
+		} );
+	</script>
+
+  <script type="text/javascript">
     $( document ).ready(function() 
     {
       $( "#companies-button" ).addClass("active")
@@ -54,6 +71,15 @@
         {% if searchText %}
         "oSearch": {"sSearch": "{{ searchText }}"},
         {% endif %}
+				"aoColumns": [
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				{ "sType": "percent" } ]
       });
           
       $(document).on("click", "tbody>tr", function()  
