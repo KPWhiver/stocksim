@@ -1,5 +1,8 @@
 # Update the daily data every half hour
-0,30 * * * * cd /home/ubuntu/stocksim/stocksim/stocksite/ && /home/ubuntu/stocksim/stocksim/bin/python /home/ubuntu/stocksim/stocksim/stocksite/manage.py updateDB --daily >> /home/ubuntu/stocksim/stocksim/logs/cronlog
+0,30 8-21 * * * cd /home/ubuntu/stocksim/stocksim/stocksite/ && /home/ubuntu/stocksim/stocksim/bin/python /home/ubuntu/stocksim/stocksim/stocksite/manage.py updateDB --daily >> /home/ubuntu/stocksim/stocksim/logs/cronlog
 
 # Update the historical data each day at midnight
 #0 0 * * * * cd /home/ubuntu/stocksim/stocksim/stocksite/ &&  /home/ubuntu/stocksim/stocksim/bin/python /home/ubuntu/stocksim/stocksim/stocksite/manage.py updateDB --historical >> /home/ubuntu/stocksim/stocksim/logs/cronlog
+
+# Update the total worth of each user each hour
+0 * * * * cd /home/ubuntu/stocksim/stocksim/stocksite/ && /home/ubuntu/stocksim/stocksim/bin/python /home/ubuntu/stocksim/stocksim/stocksite/manage.py mapReduce --totalWorth >> /home/ubuntu/stocksim/stocksim/logs/cronlog
