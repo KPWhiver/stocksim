@@ -6,7 +6,6 @@ from djangotoolbox.fields import EmbeddedModelField, ListField
 
 from django_mongodb_engine.contrib import MongoDBManager
 
-
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     money = models.DecimalField(max_digits=50, decimal_places=4, default=0)
@@ -56,23 +55,6 @@ class UserProfile(models.Model):
       
     
     objects = MongoDBManager()
-    
-def totalStockBought():
-    mapfunc = """
-    function() 
-    {
-        this.stocks.forEach(
-        function(stock) { emit(stock.company_id, stock.amount) }
-        )
-    }
-    """
-    reducefunc = """
-    function reduce(key, values) 
-    {
-        return Array.sum(values)
-    }
-    """
-    return UserProfile.objects.map_reduce(mapfunc, reducefunc, 'stockcount')
 
 class Company(models.Model):
     shortName = models.CharField(max_length=50) # Please insert appropriate max_length
@@ -112,4 +94,44 @@ def create_profile(sender, instance, created, **kwargs):
 
 
 #class User:
+
+
+# Map/Reduce methods
+
+# Result of totalStockBought()
+# Result can be found back by something like:
+#     comp = Company.objects.get(shortName="GOOG")
+#     amount = StockCount.objects.get(company=comp).amount
+class StockCount(models.Model):
+    company = models.ForeignKey(Company)
+    amount = models.BigIntegerField()
+
+def totalStockBought():
+    mapfunc = """
+    function() 
+    {
+        this.stocks.forEach(
+        function(stock) { emit(stock.company_id, stock.amount) }
+        )
+    }
+    """
+    reducefunc = """
+    function reduce(key, values) 
+    {
+        return Array.sum(values)
+    }
+    """
+    res = UserProfile.objects.map_reduce(mapfunc, reducefunc, 'temp_stockcount', drop_collection=True)
+
+    for pair in res:
+        comp = Company.objects.get(id=pair.key)
+        count = None
+
+        if StockCount.objects.filter(company = comp).exists():
+            count = StockCount.objects.get(company = comp)
+            count.amount = pair.value
+        else:
+            count = StockCount(company=comp, amount=pair.value)
+
+        count.save()
 
