@@ -32,7 +32,7 @@ class UserProfile(models.Model):
       comp = Company.objects.get(shortName=name)
       price = comp.dailyData[-1].askPrice * amount
       if price > self.money:
-        return False
+        return False, "Not enough money"
       
       self.money -= price
       stock = self.get_or_create_stock(name)
@@ -40,12 +40,12 @@ class UserProfile(models.Model):
       
       self.save()
       stock.save()
-      return True
+      return True, ""
     
     def sell_stock(self, name, amount):
       stock = self.get_or_create_stock(name)
       if stock.amount < amount:
-        return False
+        return False, "Not enough stock"
       
       comp = Company.objects.get(shortName=name)
       price = comp.dailyData[-1].bidPrice * amount
@@ -55,7 +55,7 @@ class UserProfile(models.Model):
       
       self.save()
       stock.save()
-      return True
+      return True, ""
       
     
     objects = MongoDBManager()
@@ -65,6 +65,7 @@ class Company(models.Model):
     longName = models.CharField(max_length=50) # Please insert appropriate max_length
     historicData = ListField(EmbeddedModelField('History'))
     dailyData = ListField(EmbeddedModelField('TimePoint'))
+    totalStocks = models.BigIntegerField()
     
     objects = MongoDBManager()
 
@@ -126,10 +127,6 @@ def create_profile(sender, instance, created, **kwargs):
 # Result can be found back by something like:
 #     comp = Company.objects.get(shortName="GOOG")
 #     amount = StockCount.objects.get(company=comp).amount
-class StockCount(models.Model):
-    company = models.ForeignKey(Company)
-    amount = models.BigIntegerField()
-
 def totalWorth():
     mapfuncUser = """
     function() 
@@ -243,14 +240,7 @@ def totalStockBought():
     res = UserProfile.objects.map_reduce(mapfunc, reducefunc, 'temp_stockcount', drop_collection=True)
 
     for pair in res:
-        comp = Company.objects.get(id=pair.key)
-        count = None
-
-        if StockCount.objects.filter(company = comp).exists():
-            count = StockCount.objects.get(company = comp)
-            count.amount = pair.value
-        else:
-            count = StockCount(company=comp, amount=pair.value)
-
-        count.save()
+        comp = Company.objects.get(id = pair.key)
+        comp.totalStocks = pair.value
+        comp.save()
 
