@@ -68,6 +68,10 @@
     </div>
   </div>
   
+  <div id="errors" class="row">
+  
+  </div>
+  
   <div class="text-center">
     <form>
       <div class="input-prepend input-append">
@@ -123,6 +127,10 @@
                   csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
         })
+        //.success(function(data, textStatus, jqXHR) {
+        //  console.log(data);
+        //  $("#errors").html(data);
+        //});
         .always(function() { // For now, reload the page after sending an ajax call
           location.reload();
         });
