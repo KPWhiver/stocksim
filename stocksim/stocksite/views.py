@@ -76,11 +76,13 @@ def company(request, name):
       return HttpResponseNotFound('<h1>Company does not exist</h1>')
     stocks = request.user.get_profile().get_stock(name)
     
+    
+    percentageChange = company.percentageChange()
     # ownStock is None when the user has not yet bought stock of that company
     if not stocks is None:
-      return render(request, 'company.html', {'company':company, 'amount_stocks':stocks.amount, 'value_stocks':stocks.get_value()})
+      return render(request, 'company.html', {'company':company, 'percentage_change':percentageChange, 'amount_stocks':stocks.amount, 'value_stocks':stocks.get_value()})
     else:
-      return render(request, 'company.html', {'company':company, 'amount_stocks':0, 'value_stocks':0})
+      return render(request, 'company.html', {'company':company, 'percentage_change':percentageChange, 'amount_stocks':0, 'value_stocks':0})
 
 def rest(request, name):
     try:
