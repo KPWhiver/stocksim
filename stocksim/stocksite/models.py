@@ -10,7 +10,7 @@ import datetime
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
-    money = models.DecimalField(max_digits=50, decimal_places=4, default=0)
+    money = models.DecimalField(max_digits=50, decimal_places=4, default=100000)
     stocks = ListField(EmbeddedModelField('OwnedStock'))
     
     def get_stock(self, name):
@@ -64,6 +64,15 @@ class Company(models.Model):
     historicData = ListField(EmbeddedModelField('History'))
     dailyData = ListField(EmbeddedModelField('TimePoint'))
     totalStocks = models.BigIntegerField()
+    
+    def percentageChange(self):
+      """ Returns the percentage change relative to yesterdays closing price"""
+      try:
+        curPrice = self.dailyData[-1].currentPrice
+        closePrice = self.historicData[-1].closePrice
+      except IndexError: # Just return zero when no historic or dailyData is available yet
+        return 0.0
+      return (curPrice - closePrice)/closePrice * 100
 
 class History(models.Model):
     date = models.DateField(default=datetime.date.today)
