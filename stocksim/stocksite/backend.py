@@ -147,9 +147,9 @@ def fillDatabase():
             print 'Error occurred:', e, 'company:', company.shortName
             continue
             
-        for (date, values) in data.items():
+        for (date, values) in sorted(data.items()):
             day = datetime.date(int(date[0:4]), int(date[5:7]), int(date[8:10]))
-            company.historicData.append(History(date = date, volume = values['Volume'], adjustedClosePrice = values['Adj Close'], 
+            company.historicData.append(History(date = day, volume = values['Volume'], adjustedClosePrice = values['Adj Close'],
                                         highPrice = values['High'], lowPrice = values['Low'], closePrice = values['Close'], openPrice = values['Open']))
         
         company.save()

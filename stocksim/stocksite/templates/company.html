@@ -90,14 +90,14 @@
   <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript">
   $(function() {
-      $.getJSON('http://ec2-79-125-101-145.eu-west-1.compute.amazonaws.com/rest/{{ company.shortName }}/', function(data) {
+      $.getJSON('/rest/{{ company.shortName }}/', function(data) {
         $('#graph-container1').highcharts('StockChart', {
             chart: {
               events : {
                 load: function() {
                   var series = this.series[0];
                   setInterval(function() {
-                    $.getJSON('http://ec2-79-125-101-145.eu-west-1.compute.amazonaws.com/rest/{{ company.shortName }}/', function(data) {
+                    $.getJSON('/rest/{{ company.shortName }}/', function(data) {
                       series.setData(data);
                     });
                     

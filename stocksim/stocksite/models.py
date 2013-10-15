@@ -6,6 +6,8 @@ from djangotoolbox.fields import EmbeddedModelField, ListField
 
 from django_mongodb_engine.contrib import MongoDBManager
 
+import datetime
+
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -81,7 +83,8 @@ class Company(models.Model):
     dailyData = ListField(EmbeddedModelField('TimePoint'))
 
 class History(models.Model):
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=datetime.date.today)
+    #date = models.DateField(auto_now_add=True)
     volume = models.BigIntegerField()
     adjustedClosePrice = models.DecimalField(max_digits=10, decimal_places=2)
     highPrice = models.DecimalField(max_digits=10, decimal_places=2)
