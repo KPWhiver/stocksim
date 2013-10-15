@@ -3,7 +3,6 @@ from datetime import datetime, date
 import json
 import time
 
-
 # Third party imports
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
@@ -111,12 +110,13 @@ def trade_stock(request):
       form.performAction(request.user)
     else:
       print form.errors # Return the error so that it can be displayed
+
     # Return some data which can be used to refresh the page
     #response_data = {}
     #
     #response_data["errors"] = form.errors
     #test = form.errors
-    #return HttpResponse(test)#, content_type="application/json")
+    return HttpResponse(json.dumps([]), content_type="application/json")
 
 @login_required
 def settings(request):

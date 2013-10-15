@@ -30,7 +30,7 @@ class UserProfile(models.Model):
       comp = Company.objects.get(shortName=name)
       price = comp.dailyData[-1].askPrice * amount
       if price > self.money:
-        return False
+        return False, "Not enough money"
       
       self.money -= price
       stock = self.get_or_create_stock(name)
@@ -38,12 +38,12 @@ class UserProfile(models.Model):
       
       self.save()
       stock.save()
-      return True
+      return True, ""
     
     def sell_stock(self, name, amount):
       stock = self.get_or_create_stock(name)
       if stock.amount < amount:
-        return False
+        return False, "Not enough stock"
       
       comp = Company.objects.get(shortName=name)
       price = comp.dailyData[-1].bidPrice * amount
@@ -53,7 +53,7 @@ class UserProfile(models.Model):
       
       self.save()
       stock.save()
-      return True
+      return True, ""
       
     
     objects = MongoDBManager()
