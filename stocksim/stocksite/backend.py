@@ -1,6 +1,7 @@
 import datetime
 import time
 import csv
+from decimal import *
 
 try:
     # py3
@@ -12,6 +13,18 @@ except ImportError:
     from urllib import urlencode
     
 from stocksite.models import Company, History, TimePoint
+
+def float_to_decimal(f):
+    "Convert a floating point number to a Decimal with no loss of information"
+    n, d = f.as_integer_ratio()
+    numerator, denominator = Decimal(n), Decimal(d)
+    ctx = Context(prec=60)
+    result = ctx.divide(numerator, denominator)
+    while ctx.flags[Inexact]:
+        ctx.flags[Inexact] = False
+        ctx.prec *= 2
+        result = ctx.divide(numerator, denominator)
+    return result
 
 def requestFinanceData(symbols, stat):
     url = 'http://finance.yahoo.com/d/quotes.csv?s=%s&f=%s' % (symbols, stat)
@@ -92,14 +105,14 @@ def updateDailyDataRange(companies, startIndex, length):
         try:
             bid = float(values[1])
         except:
-            bid = 0
+            bid = float(0)
             
         try:
             ask = float(values[2])
         except:
-            ask = 0
+            ask = float(0)
         
-        company.dailyData.append(TimePoint(currentPrice = price, bidPrice = bid, askPrice = ask))
+        company.dailyData.append(TimePoint(currentPrice = float_to_decimal(price), bidPrice = float_to_decimal(bid), askPrice = float_to_decimal(ask)))
         company.save()
         
     print startIndex + length, 'done'
@@ -129,7 +142,7 @@ def addCompanies(interval = 1):
             if Company.objects.filter(shortName = company[0]).exists():
                 continue
                 
-            Company(shortName = company[0].strip(), longName = company[1].strip(), historicData = [], dailyData = []).save()
+            Company(shortName = company[0].strip(), longName = company[1].strip(), historicData = [], dailyData = [], totalStocks = 0).save()
 
 def fillDatabase():
     companies = Company.objects.all()

@@ -63,6 +63,7 @@ class Company(models.Model):
     longName = models.CharField(max_length=50) # Please insert appropriate max_length
     historicData = ListField(EmbeddedModelField('History'))
     dailyData = ListField(EmbeddedModelField('TimePoint'))
+    totalStocks = models.BigIntegerField()
 
 class History(models.Model):
     date = models.DateField(default=datetime.date.today)
@@ -105,10 +106,6 @@ def create_profile(sender, instance, created, **kwargs):
 # Result can be found back by something like:
 #     comp = Company.objects.get(shortName="GOOG")
 #     amount = StockCount.objects.get(company=comp).amount
-class StockCount(models.Model):
-    company = models.ForeignKey(Company)
-    amount = models.BigIntegerField()
-
 def totalStockBought():
     mapfunc = """
     function() 
@@ -127,14 +124,7 @@ def totalStockBought():
     res = UserProfile.objects.map_reduce(mapfunc, reducefunc, 'temp_stockcount', drop_collection=True)
 
     for pair in res:
-        comp = Company.objects.get(id=pair.key)
-        count = None
-
-        if StockCount.objects.filter(company = comp).exists():
-            count = StockCount.objects.get(company = comp)
-            count.amount = pair.value
-        else:
-            count = StockCount(company=comp, amount=pair.value)
-
-        count.save()
+        comp = Company.objects.get(id = pair.key)
+        comp.totalStocks = pair.value
+        comp.save()
 
