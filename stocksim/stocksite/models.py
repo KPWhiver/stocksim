@@ -66,9 +66,8 @@ class Company(models.Model):
     historicData = ListField(EmbeddedModelField('History'))
     dailyData = ListField(EmbeddedModelField('TimePoint'))
     
-<<<<<<< HEAD
     objects = MongoDBManager()
-=======
+
     def percentageChange(self):
       """ Returns the percentage change relative to yesterdays closing price"""
       try:
@@ -77,7 +76,6 @@ class Company(models.Model):
       except IndexError: # Just return zero when no historic or dailyData is available yet
         return 0.0
       return (curPrice - closePrice)/closePrice * 100
->>>>>>> 83af1687c278526e9d5f16a59f03f2fa5190727d
 
 class History(models.Model):
     date = models.DateField(default=datetime.date.today)
