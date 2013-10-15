@@ -14,9 +14,11 @@
       <th> Current price </th>
       <th> Current bid price </th>
       <th> Current ask price </th>
+      <th> Change </th>
     </tr>
   </thead>
   <tbody>
+    {% load humanize %}   
     {% for company in companies %}
       {% with company.historicData|last as last %}
     <tr style="cursor: pointer;">
@@ -29,6 +31,7 @@
       <td> {{ last.currentPrice }} </td>
       <td> {{ last.bidPrice }} </td>
       <td> {{ last.askPrice }} </td>
+      <td> {{ company.percentageChange|floatformat:2|intcomma }}% </td>
       {% endwith %}
     </tr>
     {% endfor %}

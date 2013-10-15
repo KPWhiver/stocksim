@@ -71,7 +71,7 @@ class Company(models.Model):
         closePrice = self.historicData[-1].closePrice
       except IndexError: # Just return zero when no historic or dailyData is available yet
         return 0.0
-      return (curPrice - closePrice)/closePrice
+      return (curPrice - closePrice)/closePrice * 100
 
 class History(models.Model):
     date = models.DateField(default=datetime.date.today)
