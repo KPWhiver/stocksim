@@ -63,6 +63,15 @@ class Company(models.Model):
     longName = models.CharField(max_length=50) # Please insert appropriate max_length
     historicData = ListField(EmbeddedModelField('History'))
     dailyData = ListField(EmbeddedModelField('TimePoint'))
+    
+    def percentageChange(self):
+      """ Returns the percentage change relative to yesterdays closing price"""
+      try:
+        curPrice = self.dailyData[-1].currentPrice
+        closePrice = self.historicData[-1].closePrice
+      except IndexError: # Just return zero when no historic or dailyData is available yet
+        return 0.0
+      return (curPrice - closePrice)/closePrice
 
 class History(models.Model):
     date = models.DateField(default=datetime.date.today)

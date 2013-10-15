@@ -53,7 +53,6 @@
         {% endif %}
       });
           
-      //$( "tbody>tr" ).click(function()
       $(document).on("click", "tbody>tr", function()  
       {
         location.href = $(this).find("a").attr("href");
