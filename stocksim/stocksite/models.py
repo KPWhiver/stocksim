@@ -12,6 +12,49 @@ class UserProfile(models.Model):
     money = models.DecimalField(max_digits=50, decimal_places=4, default=0)
     stocks = ListField(EmbeddedModelField('OwnedStock'))
     
+    def get_stock(self, name):
+      return next((stock for stock in self.stocks if stock.company.shortName == name), None)
+      
+    def get_or_create_stock(self, name):
+      stock = self.get_stock(name)
+      if stock is None:
+        comp = Company.objects.get(shortName=name)
+        stock = OwnedStock(company=comp, amount=0)
+        self.stocks.append(stock)
+        self.save()
+        
+      return stock
+    
+    def buy_stock(self, name, amount):
+      comp = Company.objects.get(shortName=name)
+      price = comp.dailyData[-1].askPrice * amount
+      if price > self.money:
+        return False
+      
+      self.money -= price
+      stock = self.get_or_create_stock(name)
+      stock.amount += amount
+      
+      self.save()
+      stock.save()
+      return True
+    
+    def sell_stock(self, name, amount):
+      stock = self.get_or_create_stock(name)
+      if stock.amount < amount:
+        return False
+      
+      comp = Company.objects.get(shortName=name)
+      price = comp.dailyData[-1].bidPrice * amount
+      
+      self.money += price
+      stock.amount -= amount
+      
+      self.save()
+      stock.save()
+      return True
+      
+    
     objects = MongoDBManager()
     
 def totalStockBought():

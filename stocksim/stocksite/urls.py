@@ -24,5 +24,7 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login', {'login_url': '/accounts/login/'}),
     url(r'^accounts/register/$', 'stocksite.views.register'),
     
+    url(r'^tradestock/$', 'stocksite.views.trade_stock'), # URL for buying/selling through AJAX calls 
+    
     url(r'^rest/([A-Z]+)/$', 'stocksite.views.rest'),
 )
