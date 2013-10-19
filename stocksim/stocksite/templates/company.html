@@ -40,6 +40,20 @@
             <td><strong>Yesterday adjusted close price</strong></td>
             <td>{{ last.adjustedClosePrice }}</td>
           </tr>
+          {% with company.dailyData|last as dailyData %}
+          <tr>
+            <td><strong>Current price</strong></td>
+            <td>{{ dailyData.currentPrice }}</td>
+          </tr>
+          <tr>
+            <td><strong>Bid price</strong></td>
+            <td>{{ dailyData.bidPrice }}</td>
+          </tr>
+          <tr>
+            <td><strong>Ask price</strong></td>
+            <td>{{ dailyData.askPrice }}</td>
+          </tr>
+          {% endwith %}
           <tr>
             <td><strong>Volume</strong></td>
             <td>{{ last.volume }}</td>
@@ -106,7 +120,7 @@
               }
             },
             title : {
-                text : '{{ company.shortName }} Stock Today'
+                text : '{{ company.shortName }} Stock'
             },
             xAxis: {
                 ordinal: false
