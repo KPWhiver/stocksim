@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import time
 
 if __name__ == "__main__":
   # Read arguments
@@ -28,6 +29,8 @@ if __name__ == "__main__":
 }
 
 """ % (host, port))
+  
+  time.sleep(1)
   
   # Set environment
   os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
