@@ -159,5 +159,4 @@ LOGIN_REDIRECT_URL = '/'
 try:
   from db_settings import *
 except ImportError:
-  print 'Database settings are missing, please create a db_settings.py file containing the database details'
-  exit(-1)
+  pass
