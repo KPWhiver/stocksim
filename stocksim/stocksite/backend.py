@@ -1,7 +1,10 @@
 import datetime
 import time
 import csv
+import thread
 from decimal import *
+
+import schedule
 
 try:
     # py3
@@ -12,7 +15,7 @@ except ImportError:
     from urllib2 import Request, urlopen, HTTPError
     from urllib import urlencode
     
-from stocksite.models import Company, History, TimePoint
+from stocksite.models import Company, History, TimePoint, totalWorth
 
 def float_to_decimal(f):
     "Convert a floating point number to a Decimal with no loss of information"
@@ -170,5 +173,35 @@ def fillDatabase():
         
         company.save()
         time.sleep(5)
-        
 
+def input_thread(L):
+    raw_input()
+    L.append(None)
+
+def startDaemon():
+    # Set up thread to stop daemon when q is pressed
+    L = []
+    thread.start_new_thread(input_thread, (L,))
+
+    print "Starting updating process."
+    print "Updating daily data every 30 minutes."
+    schedule.every(30).minutes.do(updateDailyData)
+
+    print "Updating historic data every day at midnight."
+    schedule.every().day.at("00:01").do(updateHistoricData)
+
+    print "Updating the total worth of each user every hour"
+    schedule.every().hour.do(totalWorth)
+
+    print
+    print "Press ENTER to stop."
+
+    print "---------------"
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+        if L: break;
+
+    print "Stopping..."
+    
