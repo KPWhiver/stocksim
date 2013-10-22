@@ -206,9 +206,7 @@ def totalWorth():
     
     for pair in res:
         print pair
-        
-        
-    
+
         """
         comp = Company.objects.get(id=pair.key)
         count = None
