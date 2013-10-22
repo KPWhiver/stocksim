@@ -1,6 +1,7 @@
 import datetime
 import time
 import csv
+import thread
 from decimal import *
 
 try:
@@ -11,8 +12,9 @@ except ImportError:
     # py2
     from urllib2 import Request, urlopen, HTTPError
     from urllib import urlencode
-    
-from stocksite.models import Company, History, TimePoint
+
+from pymongo.errors import ConnectionFailure
+from stocksite.models import Company, History, TimePoint, totalWorth
 
 def float_to_decimal(f):
     "Convert a floating point number to a Decimal with no loss of information"
@@ -170,5 +172,44 @@ def fillDatabase():
         
         company.save()
         time.sleep(5)
-        
 
+def input_thread(L):
+    raw_input()
+    L.append(None)
+
+def startDaemon():
+    import schedule
+
+    # Set up thread to stop daemon when ENTER is pressed
+    L = []
+    thread.start_new_thread(input_thread, (L,))
+
+    print "Starting updating process."
+    print "Updating daily data every 30 minutes."
+    schedule.every(1).minutes.do(updateDailyData)
+
+    print "Updating historic data every day at midnight."
+    schedule.every().day.at("00:01").do(updateHistoricData)
+
+    print "Updating the total worth of each user every hour"
+    schedule.every().hour.do(totalWorth)
+
+    print
+    print "Press ENTER to stop."
+
+    print "---------------"
+
+    while True:
+        # Stop running when ENTER is pressed
+        if L: break;
+
+        # Run scheduled commands
+        try:
+            schedule.run_pending()
+        except ConnectionFailure:
+            print "ConnectionFailure: Could not connect to database. Trying again..."
+
+        time.sleep(1)
+
+    print "Stopping..."
+    

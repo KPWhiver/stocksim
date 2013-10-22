@@ -40,6 +40,20 @@
             <td><strong>Yesterday adjusted close price</strong></td>
             <td>{{ last.adjustedClosePrice }}</td>
           </tr>
+          {% with company.dailyData|last as dailyData %}
+          <tr>
+            <td><strong>Current price</strong></td>
+            <td>{{ dailyData.currentPrice }}</td>
+          </tr>
+          <tr>
+            <td><strong>Bid price</strong></td>
+            <td>{{ dailyData.bidPrice }}</td>
+          </tr>
+          <tr>
+            <td><strong>Ask price</strong></td>
+            <td>{{ dailyData.askPrice }}</td>
+          </tr>
+          {% endwith %}
           <tr>
             <td><strong>Volume</strong></td>
             <td>{{ last.volume }}</td>
@@ -90,14 +104,14 @@
   <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript">
   $(function() {
-      $.getJSON('/rest/{{ company.shortName }}/', function(data) {
+      $.getJSON('/rest/companies/{{ company.shortName }}/', function(data) {
         $('#graph-container1').highcharts('StockChart', {
             chart: {
               events : {
                 load: function() {
                   var series = this.series[0];
                   setInterval(function() {
-                    $.getJSON('/rest/{{ company.shortName }}/', function(data) {
+                    $.getJSON('/rest/companies/{{ company.shortName }}/', function(data) {
                       series.setData(data);
                     });
                     
@@ -106,7 +120,7 @@
               }
             },
             title : {
-                text : '{{ company.shortName }} Stock Today'
+                text : '{{ company.shortName }} Stock'
             },
             xAxis: {
                 ordinal: false
@@ -119,7 +133,6 @@
       });
       $("#companies-button").addClass("active");
       $(".btn").click(function() {
-        console.log(this.id);
         $.ajax({
           url: '/tradestock/',
           type: 'POST',

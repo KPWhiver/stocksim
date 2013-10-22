@@ -24,6 +24,11 @@ class Command(BaseCommand):
             dest='historical',
             default=False,
             help='Update the historical data in the database'),
+        make_option('--daemon',
+            action='store_true',
+            dest='daemon',
+            default=False,
+            help='Starts a process that periodically updates the database'),
         )
 
     def handle(self, *args, **options):
@@ -42,5 +47,7 @@ class Command(BaseCommand):
           backend.updateDailyData()
         elif options['historical']:
           backend.updateHistoricData()
+        elif options['daemon']:
+          backend.startDaemon()
         else:
           raise CommandError('Missing flag')

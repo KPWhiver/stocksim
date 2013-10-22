@@ -83,24 +83,6 @@ def company(request, name):
     else:
       return render(request, 'company.html', {'company':company, 'percentage_change':percentageChange, 'amount_stocks':0, 'value_stocks':0})
 
-def rest(request, name):
-    try:
-      company = Company.objects.get(shortName=name)
-    except Company.DoesNotExist:
-      return HttpResponse(json.dumps([]), content_type="application/json")
-    
-    response_data = []
-
-    for data in company.historicData:
-      timestamp = (data.date.toordinal() - date(1970, 1, 1).toordinal()) *24*60*60*1000
-      response_data.append([timestamp, float(data.openPrice)])
-    
-    for data in company.dailyData:
-      timestamp = (data.time - datetime(1970, 1, 1)).total_seconds() * 1000
-      response_data.append([timestamp, float(data.currentPrice)])
-    
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
-    
 @login_required
 @require_POST
 @ajax_required
