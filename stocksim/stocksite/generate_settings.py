@@ -25,6 +25,9 @@ if __name__ == "__main__":
         'PASSWORD': '',
         'HOST': '%s', 
         'PORT': %d, 
+        'OPTIONS' : {
+            'replicaSet' : 'rs0'
+        }
     }
 }
 
