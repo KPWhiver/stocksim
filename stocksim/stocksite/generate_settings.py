@@ -33,8 +33,6 @@ if __name__ == "__main__":
 
 """ % (host, port))
   
-  time.sleep(1)
-  
   # Set environment
   os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
   
