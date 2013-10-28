@@ -2,6 +2,7 @@
 from datetime import datetime, date
 import json
 import time
+import traceback
 
 # Third party imports
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
@@ -88,17 +89,26 @@ def company(request, name):
 @ajax_required
 def trade_stock(request):
     form = TradeForm(request.POST)
-    if form.is_valid():
-      form.performAction(request.user)
-    else:
-      print form.errors # Return the error so that it can be displayed
-
+    success = form.performAction(request.user)
+    
     # Return some data which can be used to refresh the page
-    #response_data = {}
-    #
-    #response_data["errors"] = form.errors
-    #test = form.errors
-    return HttpResponse(json.dumps([]), content_type="application/json")
+    response_data = {}
+    
+    # Add any errors from the form
+    response_data["errors"] = form.errors
+
+    if success:
+      stocks = request.user.get_profile().get_stock(form.cleaned_data['company'])
+      if not(stocks is None): # Might be none if it was just deleted because the user has zero stocks of the company
+        response_data["owned_stock"] = int(stocks.amount)
+        response_data["value"] = stocks.get_value_pretty()
+      else:
+        response_data["owned_stock"] = 0
+        response_data["value"] = "$0.00"
+        
+      response_data["money"] = request.user.get_profile().get_money_pretty()
+    
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @login_required
 def settings(request):
