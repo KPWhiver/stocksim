@@ -14,7 +14,7 @@ except ImportError:
     from urllib import urlencode
 
 from pymongo.errors import ConnectionFailure
-from stocksite.models import Company, History, TimePoint, totalWorth
+from stocksite.models import Company, History, TimePoint, totalWorth, totalStockBought
 
 def float_to_decimal(f):
     "Convert a floating point number to a Decimal with no loss of information"
@@ -191,8 +191,9 @@ def startDaemon():
     print "Updating historic data every day at midnight."
     schedule.every().day.at("00:01").do(updateHistoricData)
 
-    print "Updating the total worth of each user every hour"
+    print "Running map/reduce methods every hour"
     schedule.every().hour.do(totalWorth)
+    schedule.every().hour.do(totalStockBought)
 
     print
     print "Press ENTER to stop."
