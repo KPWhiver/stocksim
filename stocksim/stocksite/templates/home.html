@@ -80,27 +80,6 @@
             }]
         });
       });
-      $("#companies-button").addClass("active");
-      $(".btn").click(function() {
-        $.ajax({
-          url: '/tradestock/',
-          type: 'POST',
-          data: {
-                  action: this.id,
-                  company: '{{ company.shortName }}',
-                  amount: $('#change-value').val(),
-                  csrfmiddlewaretoken: '{{ csrf_token }}'
-                },
-        })
-        //.success(function(data, textStatus, jqXHR) {
-        //  console.log(data);
-        //  $("#errors").html(data);
-        //});
-        .always(function() { // For now, reload the page after sending an ajax call
-          location.reload();
-        });
-      });
-      
       $( "#home-button" ).addClass("active")
       
       $( "#ownedStock" ).dataTable(

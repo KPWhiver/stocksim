@@ -140,7 +140,7 @@
         });
       });
       $("#companies-button").addClass("active");
-      $(".btn").click(function() {
+      $("#buy, #sell").click(function() {
         $('body').css('cursor', 'wait');
         $.ajax({
           url: '/tradestock/',
