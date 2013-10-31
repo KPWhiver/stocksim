@@ -1,4 +1,6 @@
 import datetime
+import locale
+locale.setlocale( locale.LC_ALL, '' )
 from decimal import Decimal
 
 from django.db.models.signals import post_save
@@ -18,6 +20,9 @@ class UserProfile(models.Model):
     money = models.DecimalField(max_digits=50, decimal_places=4, default=100000)
     stocks = ListField(EmbeddedModelField('OwnedStock'))
     totalWorthData = ListField(EmbeddedModelField('TotalWorth'))
+    
+    def get_money_pretty(self):
+      return locale.currency(self.money, grouping=True)
     
     def get_stock(self, name):
       return next((stock for stock in self.stocks if stock.company.shortName == name), None)
@@ -56,9 +61,13 @@ class UserProfile(models.Model):
       
       self.money += price
       stock.amount -= amount
+      stock.save()
+      
+      if stock.amount == 0:
+        self.stocks.remove(stock)
+        stock.delete()
       
       self.save()
-      stock.save()
       return True, ""
       
     
@@ -109,7 +118,10 @@ class OwnedStock(models.Model):
     
     def get_value(self):
         return self.amount * self.company.dailyData[-1].currentPrice
-
+    
+    def get_value_pretty(self):
+        return locale.currency(self.get_value(), grouping=True)
+        
 # Result from map reduces in totalWorth()
 class CompanyOwners(models.Model):
     value = EmbeddedModelField('Owners')

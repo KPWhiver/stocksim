@@ -74,31 +74,35 @@
   </div>
   
   <div class="row">
+    <div class="span12 text-center">
+      <div id="errors"></div>
+    </div>
+  </div>
+  
+  <div class="row">
     <div class="span4 text-center">
-      <h3>Owned stock: {{ amount_stocks }}</h3>
+      <h3>Owned stock: <span id="owned-stock">{{ amount_stocks }}</span></h3>
     </div>
     <div class="span4 text-center">
       {% load humanize %}   
-      <h3>Value: ${{ value_stocks|floatformat:2|intcomma }}</h3>
+      <h3>Value: <span id="value">${{ value_stocks|floatformat:2|intcomma }}</span></h3>
     </div>
     <div class="span4 text-center">
       <h3>Change: {{ percentage_change|floatformat:2|intcomma }}%</h3>
     </div>
   </div>
   
-  <div id="errors" class="row">
-  
-  </div>
-  
-  <div class="text-center">
-    <form>
-      <div class="input-prepend input-append">
-        <button id="buy" class="btn" type="button">Buy</button>
-        <input class="span2" id="change-value" type="text" 
-          onkeypress="if(event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
-        <button id="sell" class="btn" type="button">Sell</button>
-      </div>
-    </form>
+  <div class="row">
+    <div class="span12 text-center">
+      <form>
+        <div class="input-prepend input-append">
+          <button id="buy" class="btn" type="button">Buy</button>
+          <input class="span2" id="change-value" type="text" 
+            onkeypress="if(event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+          <button id="sell" class="btn" type="button">Sell</button>
+        </div>
+      </form>
+    </div>
   </div>
 
 {% endblock %}
@@ -137,6 +141,7 @@
       });
       $("#companies-button").addClass("active");
       $(".btn").click(function() {
+        $('body').css('cursor', 'wait');
         $.ajax({
           url: '/tradestock/',
           type: 'POST',
@@ -147,12 +152,29 @@
                   csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
         })
-        //.success(function(data, textStatus, jqXHR) {
-        //  console.log(data);
-        //  $("#errors").html(data);
-        //});
-        .always(function() { // For now, reload the page after sending an ajax call
-          location.reload();
+        .success(function(data, textStatus, jqXHR) {
+          // Show any error messages that were returned
+          $("#errors").text("")
+          for (var error in data.errors) {
+            if (data.errors.hasOwnProperty(error)) {
+              $("#errors").append(data.errors[error]);
+            }
+          }
+          
+          // Update the class
+          if ($("#errors").text() == "") {
+            $("#errors").removeClass("alert alert-error")
+          } else {
+            $("#errors").addClass("alert alert-error")
+          }
+          
+          // Update the values
+          $("#owned-stock").text(data.owned_stock)
+          $("#value").text(data.value)
+          $("#money").text(data.money)
+        })
+        .always(function() { 
+          $('body').css('cursor', 'auto');
         });
       });
 

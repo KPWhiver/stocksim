@@ -24,16 +24,11 @@ if __name__ == "__main__":
         'USER': '', 
         'PASSWORD': '',
         'HOST': '%s', 
-        'PORT': %d, 
-        'OPTIONS' : {
-            'replicaSet' : 'rs0'
-        }
+        'PORT': %d
     }
 }
 
 """ % (host, port))
-  
-  time.sleep(1)
   
   # Set environment
   os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
