@@ -46,4 +46,4 @@ if __name__ == "__main__":
   
   # Append the site id
   with open('db_settings.py', 'a') as file:
-    file.write("""SITE_ID = "%s" \n""" % (site_id))
+    file.write("""SITE_ID = "%s"\n""" % (site_id))
